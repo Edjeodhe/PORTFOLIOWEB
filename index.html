@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<!-- saved from url=(0179)file:///C:/Users/user/Desktop/20260908_13-3_%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4%EB%9E%9C%EB%94%A9%ED%8E%98%EC%9D%B4%EC%A7%80_Ver01_%EA%B9%80%EB%AF%BC%EC%84%B1/index.html -->
+<!--
+    ⚠️ AI/Claude 작업자 필독 — 이 파일을 수정하기 전에 반드시 읽으세요 ⚠️
+
+    1) .editable-md 클래스가 붙은 요소의 텍스트/HTML 내용(이 파일에 이미 적혀 있는
+       실제 문구들 — 이름, 경력, 프로젝트 설명, 소개글 등)은 사용자가 직접 작성한
+       콘텐츠입니다. 기능 추가·아이콘 교체·스타일 수정 요청을 처리할 때 이 내용을
+       임의로 바꾸거나, 문구를 "다듬거나", 대신 채워 넣지 마세요.
+
+    2) 새 기능/요소를 추가할 때는:
+       - 반드시 새로운 태그를 추가하는 방식으로 하고, 기존 .editable-md 요소를
+         지우고 다시 만들지 마세요 (안에 사용자가 입력한 내용이 사라집니다).
+       - 새 .editable-md 요소를 추가하면 반드시 새로운 고유 data-edit-id
+         값을 부여하세요 (예: edit54, edit55 ...). 기존 요소의 data-edit-id는
+         절대 변경/재사용하지 마세요.
+
+    3) 배경: 이 페이지는 UNLOCK 상태로 편집한 내용을 브라우저 localStorage에
+       data-edit-id 기준으로 저장했다가 새로고침 시 복원합니다(스크립트 하단
+       STORAGE_KEY 참고). 과거에는 이 매칭이 DOM 순서(index) 기반이어서, 문서
+       중간에 새 요소를 추가하면 그 뒤 모든 요소의 저장값이 밀려 엉뚱한 곳에
+       나타나는 버그가 있었습니다(예: 제목 자리에 이메일이 뜨는 등). data-edit-id
+       도입으로 해결되었으니, 이 방식을 계속 유지해야 합니다.
+
+    4) 이 파일을 통째로 Write(덮어쓰기)하지 말고, 필요한 부분만 정확히 지정해서
+       Edit 하세요. 구조가 비슷한 부분이 많으므로 old_string은 충분히 고유하게
+       잡아서 의도치 않은 다른 곳이 바뀌지 않도록 하세요.
+-->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Kim Minsung — Game Planner Portfolio</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+
+    <style>
+        /* ==========================================================================
+           Design Tokens (Apple Style Dark/Light + Studio Few Typography)
+           ========================================================================== */
+        :root {
+            --color-pure-black: #000000;
+            --color-obsidian: #1d1d1f;
+            --color-carbon: #111111;
+            --color-frost-white: #f5f5f7;
+            --color-paper-white: #ffffff;
+            --color-platinum: #86868b;
+            --color-apple-blue: #0071e3;
+            --color-signal-orange: #f56900;
+            --color-graphite: #333336;
+            
+            --font-family-system: 'Pretendard', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            
+            --radius-pill: 980px;
+            --radius-card: 24px;
+            --radius-button: 36px;
+
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--color-pure-black);
+            color: var(--color-frost-white);
+            font-family: var(--font-family-system);
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            min-height: 100vh;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        /* Inline Content Editable Styling for Live Editing */
+        [contenteditable="true"] {
+            outline: 2px dashed var(--color-apple-blue);
+            outline-offset: 4px;
+            border-radius: 4px;
+            background: rgba(0, 113, 227, 0.08);
+            cursor: text;
+        }
+
+        /* Header & Navigation */
+        .header {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .brand-logo {
+            pointer-events: auto;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: -0.5px;
+            color: var(--color-frost-white);
+            background: rgba(29, 29, 31, 0.75);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            padding: 10px 20px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(29, 29, 31, 0.8);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            padding: 6px 8px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-btn {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-platinum);
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--color-paper-white);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .lock-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--color-frost-white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lock-btn.unlocked {
+            background: var(--color-signal-orange);
+            border-color: var(--color-signal-orange);
+            color: var(--color-paper-white);
+        }
+
+        /* Side Table of Contents (Notion Style) */
+        .side-toc {
+            position: fixed;
+            right: 32px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(29, 29, 31, 0.6);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            padding: 16px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .toc-item {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-platinum);
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toc-item::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--color-platinum);
+            transition: var(--transition-smooth);
+        }
+
+        .toc-item:hover, .toc-item.active {
+            color: var(--color-paper-white);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .toc-item.active::before {
+            background: var(--color-apple-blue);
+            transform: scale(1.4);
+        }
+
+        /* Hero Video Container */
+        .hero-video-section {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000; /* 영상 로딩 전 폴백 배경 */
+        }
+
+        .bg-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 2;
+        }
+
+        /* Sections */
+        .section {
+            min-height: 100vh;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 3;
+        }
+
+        .eyebrow {
+            color: var(--color-signal-orange);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .headline {
+            font-size: clamp(32px, 4.5vw, 56px);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+            word-break: keep-all;
+        }
+
+        .sub-text {
+            color: var(--color-platinum);
+            font-size: clamp(16px, 1.8vw, 19px);
+            line-height: 1.5;
+            letter-spacing: -0.3px;
+            max-width: 800px;
+            margin-bottom: 36px;
+            word-break: keep-all;
+        }
+
+        /* Cards & Grid */
+        .card {
+            background: var(--color-obsidian);
+            border-radius: var(--radius-card);
+            padding: 36px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: var(--transition-smooth);
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        /* ABOUT Layout */
+        .about-cover-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Numbering Style for Info Cards */
+        .info-card-inner {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 12px;
+        }
+
+        .info-card-num {
+            font-size: 48px;
+            font-weight: 900;
+            color: rgba(80, 160, 255, 0.9);
+            line-height: 1;
+            flex-shrink: 0;
+            letter-spacing: -2px;
+        }
+
+        .info-card-title {
+            font-size: 43px;
+            font-weight: 900;
+            color: var(--color-paper-white);
+            line-height: 1;
+            letter-spacing: -2px;
+            padding-left: 6px;
+        }
+
+        .info-card-desc {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+            margin-top: 4px;
+        }
+
+        /* Skills (보유 기술) */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .skill-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            transition: var(--transition-smooth);
+        }
+
+        .skill-box:hover {
+            border-color: rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .skill-box-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--color-platinum);
+            margin-bottom: 16px;
+        }
+
+        .skill-icons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .skill-icon {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 60px;
+            cursor: pointer;
+        }
+
+        .skill-icon .tile {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease;
+        }
+
+        .skill-icon .tile svg { width: 26px; height: 26px; display: block; }
+        .skill-icon .tile { overflow: hidden; }
+        /* 실제 아이콘 이미지: 기본은 여백을 두고 꽉 차게(contain) 표시 */
+        .skill-icon .tile img { width: 100%; height: 100%; object-fit: contain; display: block; padding: 6px; box-sizing: border-box; }
+        /* 자체 배경/여백이 있는 앱 아이콘형 이미지는 타일에 꽉 채워(cover) 표시 */
+        .skill-icon .tile.fill img { object-fit: cover; padding: 0; }
+
+        .skill-icon .label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.65);
+            font-weight: 600;
+            transition: color 0.25s ease;
+        }
+
+        /* Hover: 아이콘 확대 + 강조 */
+        .skill-icon:hover { z-index: 20; }
+
+        .skill-icon:hover .tile {
+            transform: scale(1.32) translateY(-6px);
+            box-shadow: 0 12px 26px rgba(0,0,0,0.55);
+        }
+
+        .skill-icon:hover .label {
+            color: var(--color-frost-white);
+        }
+
+        /* Hover: 활용 방법 툴팁 */
+        .skill-tip {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%) translateY(8px) scale(0.94);
+            width: 190px;
+            background: #2b2b2f;
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 12px;
+            line-height: 1.55;
+            color: rgba(255,255,255,0.85);
+            text-align: left;
+            box-shadow: 0 14px 34px rgba(0,0,0,0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 30;
+        }
+
+        .skill-tip strong {
+            display: block;
+            color: var(--color-frost-white);
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .skill-tip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 7px solid transparent;
+            border-top-color: #2b2b2f;
+        }
+
+        .skill-icon:hover .skill-tip,
+        .skill-icon:focus-within .skill-tip {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+
+        .skill-box-desc {
+            font-size: 13px;
+            line-height: 1.7;
+            color: rgba(255,255,255,0.72);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 14px;
+        }
+
+        .skill-box-desc strong { color: var(--color-frost-white); }
+
+        /* 짧은 한 줄짜리 라벨을 편집 후 LOCK하면 marked.js가 <p>로 감쌀 수 있는데,
+           그때 레이아웃이 깨지지 않도록 인라인으로 강제합니다. */
+        .nav-btn.editable-md p,
+        .toc-item.editable-md p,
+        .eyebrow.editable-md p,
+        .skill-box-title.editable-md p,
+        .label.editable-md p,
+        .metric-value.editable-md p,
+        .metric-label.editable-md p,
+        th.editable-md p,
+        .brand-logo.editable-md p,
+        .cta-btn .editable-md p {
+            display: inline;
+            margin: 0;
+        }
+
+        /* Format Toolbar (LOCK/UNLOCK 편집 시 폰트·굵기·색상 조정) */
+        .format-toolbar {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(29, 29, 31, 0.92);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            padding: 10px 18px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            font-size: 12px;
+            color: var(--color-frost-white);
+            max-width: calc(100% - 32px);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .format-toolbar[hidden] { display: none; }
+
+        .format-toolbar-title {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .fmt-field {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .fmt-field select,
+        .fmt-field input[type="color"] {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--color-frost-white);
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-family: inherit;
+        }
+
+        .fmt-field select option {
+            color: var(--color-obsidian);
+        }
+
+        .fmt-field input[type="color"] {
+            padding: 2px;
+            width: 34px;
+            height: 26px;
+            cursor: pointer;
+        }
+
+        .fmt-reset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--color-frost-white);
+            border-radius: var(--radius-pill);
+            padding: 5px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition-smooth);
+        }
+
+        .fmt-reset-btn:hover { background: rgba(255, 255, 255, 0.18); }
+
+        .fmt-hint {
+            color: var(--color-platinum);
+            white-space: nowrap;
+        }
+
+        @media (max-width: 700px) {
+            .format-toolbar { bottom: 12px; }
+            .fmt-hint { display: none; }
+        }
+
+        /* Profile & Resume Specifics */
+        .profile-container {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table th, .info-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 14px;
+        }
+
+        .info-table th {
+            color: var(--color-platinum);
+            width: 120px;
+            font-weight: 600;
+        }
+
+        .info-table td {
+            color: var(--color-frost-white);
+            font-weight: 500;
+        }
+
+        /* Light Band Section */
+        .light-section {
+            background-color: var(--color-paper-white);
+            color: var(--color-obsidian);
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .light-section .headline { color: var(--color-obsidian); }
+        .light-section .sub-text { color: var(--color-graphite); }
+        .light-section .card {
+            background: #fbfbfd;
+            border-color: rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+        .light-section .info-table th { color: var(--color-graphite); }
+        .light-section .info-table td { color: var(--color-obsidian); }
+        .light-section .info-table th, .light-section .info-table td {
+            border-bottom-color: rgba(0, 0, 0, 0.08);
+        }
+
+        /* Metric Badge */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .metric-badge {
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 113, 227, 0.06);
+            border: 1px solid rgba(0, 113, 227, 0.2);
+            padding: 16px 24px;
+            border-radius: 16px;
+            min-width: 0;
+        }
+
+        .metric-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--color-apple-blue);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--color-platinum);
+            margin-top: 4px;
+        }
+
+        /* Portfolio Project Image */
+        .project-card-inner {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .project-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .project-img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            flex-shrink: 0;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            order: 2;
+        }
+
+        /* Buttons */
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            background: var(--color-apple-blue);
+            color: var(--color-paper-white);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: var(--radius-button);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Project Detail Modal (자세히 보기 팝업) */
+        .project-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .project-modal-overlay.open {
+            display: flex;
+        }
+
+        .project-modal {
+            position: relative;
+            background: var(--color-paper-white);
+            color: var(--color-obsidian);
+            border-radius: var(--radius-card);
+            max-width: 720px;
+            width: 100%;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 48px 48px 44px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+            animation: modalPopIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalPopIn {
+            from { opacity: 0; transform: scale(0.94) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .project-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.06);
+            color: var(--color-obsidian);
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+
+        .project-modal-close:hover { background: rgba(0, 0, 0, 0.12); }
+
+        .project-modal-eyebrow {
+            display: block;
+            color: var(--color-apple-blue);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .project-modal-title {
+            display: block;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .project-modal-img {
+            display: block;
+            width: 100%;
+            max-width: 360px;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 14px;
+            margin: 0 auto 24px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .project-modal-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .project-modal-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .project-modal-info-label {
+            font-size: 12px;
+            color: var(--color-graphite);
+            font-weight: 600;
+        }
+
+        .project-modal-info-value {
+            font-size: 15px;
+            color: var(--color-obsidian);
+            font-weight: 700;
+        }
+
+        .project-modal-desc {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--color-graphite);
+        }
+
+        .project-modal-desc strong {
+            display: block;
+            color: var(--color-obsidian);
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        /* UNLOCK 편집 모드에서도 이 팝업은 (숨겨진 채로 있지 않고) 버튼을 누르면
+           그대로 팝업으로 뜨며, 안의 모든 텍스트(장르/플랫폼/설명 등)는 다른
+           editable-md 요소와 마찬가지로 그 자리에서 바로 클릭해 수정할 수 있습니다.
+           (편집 모드가 켜지면 toggleEditLock()이 모든 .editable-md에
+           contenteditable="true"를 걸어두므로, 팝업 내부도 자동으로 편집 가능해집니다.) */
+
+        @media (max-width: 600px) {
+            .project-modal { padding: 40px 24px 32px; }
+            .project-modal-info-grid { grid-template-columns: 1fr; }
+            .project-modal-img { max-width: 240px; }
+        }
+
+        /* Contact Section Custom Styling */
+        .contact-section {
+            text-align: center;
+            padding: 100px 24px;
+            background: var(--color-carbon);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contact-card {
+            background: var(--color-obsidian);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-card);
+            padding: 48px 64px;
+            max-width: 540px;
+            width: 100%;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition-smooth);
+        }
+
+        .contact-card:hover {
+            border-color: rgba(0, 113, 227, 0.4);
+            box-shadow: 0 16px 48px rgba(0, 113, 227, 0.15);
+        }
+
+        .contact-title {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--color-apple-blue);
+            letter-spacing: -0.5px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 24px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .contact-icon {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            /* 다크 모드 카드 배경에 맞춰 아이콘을 흰색으로 변경 */
+            filter: brightness(0) invert(1);
+        }
+
+        .contact-email {
+            font-size: 18px;
+            color: var(--color-frost-white);
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        /* Mobile Adaptations */
+        @media (max-width: 1100px) {
+            .side-toc { display: none; }
+        }
+
+        @media (max-width: 900px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-2 { grid-template-columns: 1fr; }
+            .profile-container { grid-template-columns: 1fr; }
+            .profile-img { width: 180px; height: 230px; margin: 0 auto; }
+        }
+
+        @media (max-width: 600px) {
+            .grid-4 { grid-template-columns: 1fr; }
+            .header { padding: 0 12px; top: 12px; }
+            .brand-logo { display: none; }
+            .nav-container { width: 100%; justify-content: space-between; }
+            .nav-btn { font-size: 11px; padding: 6px 10px; }
+            .section { padding: 90px 16px 50px; }
+            .contact-card { padding: 32px 20px; }
+            .contact-email { font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="brand-logo editable-md" data-edit-id="edit54" contenteditable="false">KIM MINSUNG</div>
+        <nav class="nav-container">
+            <a href="#info" class="nav-btn active editable-md" data-edit-id="edit55" contenteditable="false">INFO</a>
+            <a href="#about" class="nav-btn editable-md" data-edit-id="edit56" contenteditable="false">ABOUT</a>
+            <a href="#resume" class="nav-btn editable-md" data-edit-id="edit57" contenteditable="false">RESUME</a>
+            <a href="#portfolio" class="nav-btn editable-md" data-edit-id="edit58" contenteditable="false">PORTFOLIO</a>
+            <a href="#contact" class="nav-btn editable-md" data-edit-id="edit59" contenteditable="false">CONTACT</a>
+            <button id="lockToggleBtn" class="nav-btn lock-btn" onclick="toggleEditLock()">
+                <span id="lockIcon">🔒</span> <span id="lockText">LOCK</span>
+            </button>
+        </nav>
+    </header>
+
+    <aside class="side-toc">
+        <a href="#info" class="toc-item active editable-md" data-edit-id="edit60" contenteditable="false">INFO</a>
+        <a href="#about" class="toc-item editable-md" data-edit-id="edit61" contenteditable="false">ABOUT</a>
+        <a href="#resume" class="toc-item editable-md" data-edit-id="edit62" contenteditable="false">RESUME</a>
+        <a href="#portfolio" class="toc-item editable-md" data-edit-id="edit63" contenteditable="false">PORTFOLIO</a>
+        <a href="#contact" class="toc-item editable-md" data-edit-id="edit64" contenteditable="false">CONTACT</a>
+    </aside>
+
+    <div class="hero-video-section">
+        <video class="bg-video" id="bgVideo" autoplay="" loop="" muted="" playsinline="" webkit-playsinline="" preload="auto">
+            <source src="Last_Sanctuary_PV_final_1080p.mp4" type="video/mp4">
+            브라우저가 비디오 태그를 지원하지 않습니다.
+        </video>
+        <div class="video-overlay"></div>
+
+        <section id="info" class="section">
+            <div class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit65" contenteditable="false">01. OVERVIEW</div>
+            <h1 class="headline editable-md" data-edit-id="edit0" contenteditable="false"><span style="color: var(--color-signal-orange);">포기하지 않고 끝까지 도전</span>하는<br>기획자 김민성입니다</h1>
+            <p class="sub-text editable-md" data-edit-id="edit1" contenteditable="false">저는 반복되는 기획과 분석 과정에서 실패를 딛고 성장하는 사람입니다</p>
+
+            <div style="margin-top: 10px;">
+                <h3 style="font-size: 16px; color: var(--color-apple-blue); margin-bottom: 16px;" class="editable-md" data-edit-id="edit66" contenteditable="false">어떻게 행동하는가?</h3>
+                <div class="grid-4">
+                    <div class="card">
+                        <div class="info-card-inner">
+                            <div class="info-card-num">01</div>
+                            <div class="info-card-title editable-md" data-edit-id="edit2" contenteditable="false"><p>&nbsp;도전</p>
+</div>
+                        </div>
+                        <div class="info-card-desc editable-md" data-edit-id="edit3" contenteditable="false">문제를 분석하고, 이에 따른 해결 방안을 <br>찾기 위해 끊임 없이 도전합니다.</div>
+                    </div>
+                    <div class="card">
+                        <div class="info-card-inner">
+                            <div class="info-card-num">02</div>
+                            <div class="info-card-title editable-md" data-edit-id="edit4" contenteditable="false"><p>&nbsp;기록</p>
+</div>
+                        </div>
+                        <div class="info-card-desc editable-md" data-edit-id="edit5" contenteditable="false">모든 기록을 문서화하여 해당 업무에 대해&nbsp; 시각적, 기능적 완성도를 높입니다.</div>
+                    </div>
+                    <div class="card">
+                        <div class="info-card-inner">
+                            <div class="info-card-num">03</div>
+                            <div class="info-card-title editable-md" data-edit-id="edit6" contenteditable="false"><p>&nbsp;실행</p>
+</div>
+                        </div>
+                        <div class="info-card-desc editable-md" data-edit-id="edit7" contenteditable="false"><p>이를 통한 검증과 피드백을 바탕으로<br>더 나은 시스템을 구축합니다.</p>
+</div>
+                    </div>
+                    <div class="card">
+                        <div class="info-card-inner">
+                            <div class="info-card-num">04</div>
+                            <div class="info-card-title editable-md" data-edit-id="edit8" contenteditable="false"><p>&nbsp;회고</p>
+</div>
+                        </div>
+                        <div class="info-card-desc editable-md" data-edit-id="edit9" contenteditable="false"><p>최종 산출물에 대한 자가 피드백을<br>주기적으로 진행합니다.</p>
+</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="light-section">
+        <section id="about" class="section">
+            <div class="eyebrow editable-md" data-edit-id="edit67" contenteditable="false">02. COVER LETTER</div>
+            <h2 class="headline editable-md" data-edit-id="edit10" contenteditable="false">도전하지 않는 자에게는<br>아무것도 주어지지 않는다</h2>
+            <p class="sub-text editable-md" data-edit-id="edit11" contenteditable="false">목표 달성에 대한 강한 집념과 끈기 있는 실행력을 기획의 원동력으로 삼고 있습니다</p>
+
+            <div class="about-cover-grid">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--color-obsidian);" class="editable-md" data-edit-id="edit12" contenteditable="false"><p>가치관</p>
+</h3>
+                        <p style="font-size: 14px; line-height: 1.7; color: var(--color-graphite);" class="editable-md" data-edit-id="edit13" contenteditable="false">
+                            목표 도달에 대한 성취감을 좋아합니다. 좋아하는 '게임'에 이를 접목하여 직접 게임을 만드는 <br>기획 직무에 흥미를 갖게 되었으며, 꿈을 이루기 위해 멈추지 않고 끊임 없이 달리는 중입니다.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--color-obsidian);" class="editable-md" data-edit-id="edit14" contenteditable="false">경험, 역량 &amp; 성장 태도</h3>
+                        <p style="font-size: 14px; line-height: 1.7; color: var(--color-graphite);" class="editable-md" data-edit-id="edit15" contenteditable="false">
+                            디벨로켓 아카데미에서 기획 기술과 커뮤니케이션을 학습하고 있습니다. <br>팀 프로젝트 및 협업 경험을 통해 꾸준히 부족한 점을 보완하며 묵묵히 앞으로 나아가는<br>기획자로 성장하고 있습니다.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; align-items: flex-start; gap: 28px;">
+                        <div style="flex: 1; min-width: 0;">
+                            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--color-obsidian);" class="editable-md" data-edit-id="edit16" contenteditable="false">문제 해결 능력 &amp; 실전 성과 (PM 경험)</h3>
+                            <p style="font-size: 14px; line-height: 1.7; color: var(--color-graphite);" class="editable-md" data-edit-id="edit17" contenteditable="false">
+                        체계적인 프로세스를 선호하나 예외 변수 대응의 필요성을 실전을 통해 깨달았습니다.<br>"Last Sanctuary" 프로젝트 PM으로서 일정 관리 및 소규모 볼륨 조율을 담당하며<br>많은 시행착오 끝에 무사히 출시를 완료했습니다.
+                    </p>
+                            <div class="metric-grid">
+                                <div class="metric-badge">
+                                    <span class="metric-value editable-md" data-edit-id="edit107" contenteditable="false">3.19%</span>
+                                    <span class="metric-label editable-md" data-edit-id="edit108" contenteditable="false">itch.io 출시 2일차 CTR</span>
+                                </div>
+                                <div class="metric-badge">
+                                    <span class="metric-value editable-md" data-edit-id="edit109" contenteditable="false">8,000+</span>
+                                    <span class="metric-label editable-md" data-edit-id="edit110" contenteditable="false">유저 페이지 노출 수</span>
+                                </div>
+                                <div class="metric-badge">
+                                    <span class="metric-value editable-md" data-edit-id="edit139" contenteditable="false">11</span>
+                                    <span class="metric-label editable-md" data-edit-id="edit140" contenteditable="false">다운로드 수</span>
+                                </div>
+                                <div class="metric-badge">
+                                    <span class="metric-value editable-md" data-edit-id="edit141" contenteditable="false">31</span>
+                                    <span class="metric-label editable-md" data-edit-id="edit142" contenteditable="false">브라우저 플레이 수</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex-shrink: 0; width: 520px; display: flex; flex-direction: column; gap: 10px;">
+                            <img src="./itch_stats.png" alt="itch.io 통계 스크린샷" style="width: 100%; height: auto; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); display: block;">
+                            <img src="./itch_graph.png" alt="itch.io 분석 그래프" style="width: 100%; height: auto; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section id="resume" class="section">
+        <div class="eyebrow editable-md" data-edit-id="edit68" contenteditable="false">03. RESUME</div>
+        <h2 class="headline editable-md" data-edit-id="edit18" contenteditable="false"><p>Curriculum Vitae</p>
+</h2>
+        <p class="sub-text editable-md" data-edit-id="edit19" contenteditable="false">작성자의 인적사항, 학력, 경력 등을 소개하는 페이지입니다</p>
+
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="profile-container">
+                <img src="./IMG_5150.jpg" alt="김민성 증명사진" class="profile-img">
+                
+                <div>
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 16px;" class="editable-md" data-edit-id="edit20" contenteditable="false"><p>김민성 (Kim Min Sung)</p>
+</h3>
+                    <table class="info-table">
+                        <tbody><tr>
+                            <th class="editable-md" data-edit-id="edit100" contenteditable="false">생년월일</th>
+                            <td class="editable-md" data-edit-id="edit21" contenteditable="false"><p>xxxx년 xx월 xx일</p>
+</td>
+                            <th class="editable-md" data-edit-id="edit101" contenteditable="false">전화번호</th>
+                            <td class="editable-md" data-edit-id="edit22" contenteditable="false"><p>010-xxxx-xxxx</p>
+</td>
+                        </tr>
+                        <tr>
+                            <th class="editable-md" data-edit-id="edit102" contenteditable="false">이메일</th>
+                            <td class="editable-md" data-edit-id="edit23" contenteditable="false"><p><a href="mailto:minsung042119@gmail.com">minsung042119@gmail.com</a></p>
+</td>
+                            <th class="editable-md" data-edit-id="edit103" contenteditable="false">병역여부</th>
+                            <td class="editable-md" data-edit-id="edit24" contenteditable="false"><p>병장 만기 전역</p>
+</td>
+                        </tr>
+                        <tr>
+                            <th class="editable-md" data-edit-id="edit104" contenteditable="false">주소</th>
+                            <td colspan="3" class="editable-md" data-edit-id="edit25" contenteditable="false"><p>서울특별시 영등포구</p>
+</td>
+                        </tr>
+                        <tr>
+                            <th class="editable-md" data-edit-id="edit105" contenteditable="false">보유 자격증</th>
+                            <td class="editable-md" data-edit-id="edit26" contenteditable="false"><p>스쿠버 다이빙 자격증 보유</p>
+</td>
+                            <th class="editable-md" data-edit-id="edit106" contenteditable="false">희망 연봉</th>
+                            <td class="editable-md" data-edit-id="edit27" contenteditable="false"><p>사내 내규에 따름</p>
+</td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--color-apple-blue);" class="editable-md" data-edit-id="edit69" contenteditable="false">학력 및 교육</h3>
+                <ul style="list-style: none; font-size: 14px; line-height: 1.8; color: var(--color-frost-white);">
+                    <li class="editable-md" data-edit-id="edit28" contenteditable="false"><strong>광운대학교</strong> 정보융합학과 재학</li>
+                    <li class="editable-md" data-edit-id="edit29" contenteditable="false"><strong>디벨로켓</strong> 게임 기획 커리큘럼 수강 중</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--color-apple-blue);" class="editable-md" data-edit-id="edit70" contenteditable="false">경력 및 서비스 직무 경험</h3>
+                <ul style="list-style: none; font-size: 14px; line-height: 1.8; color: var(--color-frost-white);">
+                    <li class="editable-md" data-edit-id="edit30" contenteditable="false"><strong>맘스터치 문래점</strong> (2022.07.01 ~ 2022.12.15) / 주방</li>
+                    <li class="editable-md" data-edit-id="edit31" contenteditable="false"><strong>갤러리문래</strong> (2024.08.26 ~ 2025.02.12) / 홀서빙</li>
+                    <li class="editable-md" data-edit-id="edit32" contenteditable="false"><strong>하이바 문래점</strong> (2025.05.13 ~ 2026.07.08) / 홀서빙</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--color-apple-blue);" class="editable-md" data-edit-id="edit71" contenteditable="false">보유 기술</h3>
+            <p style="font-size: 13px; color: var(--color-platinum);" class="editable-md" data-edit-id="edit72" contenteditable="false">문서 작성 및 AI 활용 역량을 소개합니다</p>
+
+            <div class="skills-grid">
+                <!-- 문서 -->
+                <div class="skill-box">
+                    <div class="skill-box-title editable-md" data-edit-id="edit73" contenteditable="false">문서 · Document</div>
+                    <div class="skill-icons">
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile" style="background: #ffffff;">
+                                <img src="./excel-removebg-preview.png" alt="Excel">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit74" contenteditable="false">Excel</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit33" contenteditable="false"><strong>Excel</strong>일정표와 리소스 목록을 표로 정리하고, 게임 밸런스 수치 데이터를 관리했습니다.</div>
+                        </div>
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile" style="background: #ffffff;">
+                                <img src="./ppt-removebg-preview.png" alt="PowerPoint">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit75" contenteditable="false">PowerPoint</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit34" contenteditable="false"><strong>PowerPoint</strong>팀 발표용 기획 피칭 자료와 프로젝트 중간 발표 슬라이드를 제작했습니다.</div>
+                        </div>
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile" style="background: #ffffff;">
+                                <img src="./ms-word.jpg" alt="Word">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit76" contenteditable="false">Word</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit35" contenteditable="false"><strong>Word</strong>시스템 기획서와 핵심 매커니즘 명세서를 문서로 작성하고 정리했습니다.</div>
+                        </div>
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile" style="background: #ffffff;">
+                                <img src="./pdf.png" alt="PDF">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit77" contenteditable="false">PDF</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit36" contenteditable="false"><strong>PDF</strong>완성된 기획 문서를 PDF로 배포하고, 산출물을 공유·제출용으로 정리했습니다.</div>
+                        </div>
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile" style="background: #ffffff;">
+                                <img src="./obsidian-removebg-preview.png" alt="Obsidian">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit78" contenteditable="false">Obsidian</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit37" contenteditable="false"><strong>Obsidian</strong>기획 아이디어와 자료를 마크다운 노트로 정리하고, 링크로 연결해 지식을 관리했습니다.</div>
+                        </div>
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile fill" style="background: #ffffff;">
+                                <img src="./figma.png" alt="Figma" style="transform: scale(2.35);">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit79" contenteditable="false">Figma</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit38" contenteditable="false"><strong>Figma</strong>UI 목업과 화면 흐름, 게임 인터페이스 디자인 시안을 제작했습니다.</div>
+                        </div>
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile" style="background: #ffffff;">
+                                <img src="./25231-removebg-preview.png" alt="GitHub">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit137" contenteditable="false">GitHub</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit138" contenteditable="false"><strong>GitHub</strong>프로젝트 소스 코드와 산출물을 버전 관리하고, 협업·이력 관리에 활용했습니다.</div>
+                        </div>
+                    </div>
+                    <div class="skill-box-desc editable-md" data-edit-id="edit39" contenteditable="false">
+                        <strong>기획서 · 명세서 작성</strong> 및 자료 정리에 능숙합니다.<br>
+                        표·차트를 활용한 데이터 정리와 발표 자료 제작이 가능합니다.
+                    </div>
+                </div>
+
+                <!-- AI -->
+                <div class="skill-box">
+                    <div class="skill-box-title editable-md" data-edit-id="edit80" contenteditable="false">AI · 인공지능 활용</div>
+                    <div class="skill-icons">
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile" style="background: #ffffff;">
+                                <img src="./ChatGPT-Logo.svg.webp" alt="ChatGPT">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit81" contenteditable="false">ChatGPT</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit40" contenteditable="false"><strong>ChatGPT</strong>기획 아이디어 브레인스토밍과 문서 초안 작성, 텍스트 다듬기에 활용했습니다.</div>
+                        </div>
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile fill" style="background: #D97757;">
+                                <img src="./claude.png" alt="Claude">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit82" contenteditable="false">Claude</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit41" contenteditable="false"><strong>Claude</strong>Last Sanctuary 프로젝트에서 서브 개발 구현과 코드 작성을 보조받아 itch.io에 출시했습니다.</div>
+                        </div>
+                        <div class="skill-icon" tabindex="0">
+                            <div class="tile" style="background: #ffffff;">
+                                <img src="./gemini-color.png" alt="Gemini">
+                            </div>
+                            <span class="label editable-md" data-edit-id="edit83" contenteditable="false">Gemini</span>
+                            <div class="skill-tip editable-md" data-edit-id="edit42" contenteditable="false"><strong>Gemini</strong>자료 조사와 레퍼런스 검색, 다양한 관점의 아이디어 검토에 활용했습니다.</div>
+                        </div>
+                    </div>
+                    <div class="skill-box-desc editable-md" data-edit-id="edit43" contenteditable="false">
+                        <strong>생성형 AI를 활용한 실무 적용</strong> 경험이 있습니다.<br>
+                        Last Sanctuary 프로젝트에서 Claude AI로 서브 개발을 구현했습니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="light-section">
+        <section id="portfolio" class="section">
+            <div class="eyebrow editable-md" data-edit-id="edit84" contenteditable="false">04. PORTFOLIO</div>
+            <h2 class="headline editable-md" data-edit-id="edit44" contenteditable="false"><p>Project Experiences</p>
+</h2>
+            <p class="sub-text editable-md" data-edit-id="edit45" contenteditable="false">수행한 게임 제작 프로젝트 소개 페이지입니다</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="project-card-inner">
+                        <div class="project-card-content">
+                            <span class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit85" contenteditable="false">Featured Project 01</span>
+                            <h3 style="font-size: 24px; font-weight: 700; margin: 8px 0;" class="editable-md" data-edit-id="edit46" contenteditable="false"><p>Last Sanctuary</p>
+</h3>
+                            <p style="font-size: 13px; color: var(--color-graphite); margin-bottom: 16px;" class="editable-md" data-edit-id="edit47" contenteditable="false">시뮬레이션 디펜스 게임 | 5인 팀 | 진행기간: 5주</p>
+                            <div style="font-size: 14px; line-height: 1.6; color: var(--color-obsidian);" class="editable-md" data-edit-id="edit48" contenteditable="false">
+                                <strong>담당 역할: 부팀장(PM)</strong><br>
+                                - 전체 프로젝트 일정 관리 및 소규모 볼륨 컨트롤<br>
+                                - 시스템 기획서 작성 및 핵심 매커니즘 명세화<br>
+                                - Claude AI를 활용한 서브 개발 구현 및 itch.io 출시
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <button class="cta-btn" onclick="openProjectModal('project1Modal')"><span class="editable-md" data-edit-id="edit97" contenteditable="false">자세히 보기 →</span></button>
+                            </div>
+                        </div>
+                        <img src="./project_last_sanctuary.png" alt="Last Sanctuary 프로젝트 이미지" class="project-img">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="project-card-inner">
+                        <div class="project-card-content">
+                            <span class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit86" contenteditable="false">Featured Project 02</span>
+                            <h3 style="font-size: 24px; font-weight: 700; margin: 8px 0;" class="editable-md" data-edit-id="edit49" contenteditable="false"><p>내일할래</p>
+</h3>
+                            <p style="font-size: 13px; color: var(--color-graphite); margin-bottom: 16px;" class="editable-md" data-edit-id="edit50" contenteditable="false">방치형 클리커 게임 | 2인 팀 | 진행기간: 2주</p>
+                            <div style="font-size: 14px; line-height: 1.6; color: var(--color-obsidian);" class="editable-md" data-edit-id="edit51" contenteditable="false">
+                                <strong>담당 역할: 메인 개발 및 리소스 제작</strong><br>
+                                - 인게임 아트 리소스 및 UI/UX 인터페이스 설계<br>
+                                - 방치형 성장에 따른 루프 및 메인 개발 로직 구현<br>
+                                - 단기 프로젝트 내 시각적·기능적 완성도 도출
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <button class="cta-btn" onclick="openProjectModal('project2Modal')"><span class="editable-md" data-edit-id="edit99" contenteditable="false">자세히 보기 →</span></button>
+                            </div>
+                        </div>
+                        <img src="./project_naeil.png" alt="내일할래 프로젝트 이미지" class="project-img">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 프로젝트 상세 정보 팝업: LOCK(감상) 모드에서는 버튼 클릭 시 팝업으로 뜨고,
+                 UNLOCK(편집) 모드에서는 카드 아래 그대로 펼쳐져서 내용을 수정할 수 있습니다. -->
+            <div class="project-modal-overlay" id="project1Modal">
+                <div class="project-modal">
+                    <button type="button" class="project-modal-close" onclick="closeProjectModal('project1Modal')" aria-label="닫기">✕</button>
+                    <span class="project-modal-eyebrow editable-md" data-edit-id="edit111" contenteditable="false">PROJECT DETAIL</span>
+                    <h3 class="project-modal-title editable-md" data-edit-id="edit112" contenteditable="false">Last Sanctuary</h3>
+                    <img src="./project_last_sanctuary.png" alt="Last Sanctuary 상세 이미지" class="project-modal-img">
+                    <div class="project-modal-info-grid">
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit113" contenteditable="false">장르</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit114" contenteditable="false">시뮬레이션 디펜스</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit115" contenteditable="false">플랫폼</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit116" contenteditable="false">PC (itch.io)</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit117" contenteditable="false">팀 구성</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit118" contenteditable="false">5인 팀</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit119" contenteditable="false">진행기간</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit120" contenteditable="false">5주</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit121" contenteditable="false">담당 역할</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit122" contenteditable="false">부팀장 (PM)</span>
+                        </div>
+                    </div>
+                    <div class="project-modal-desc editable-md" data-edit-id="edit123" contenteditable="false">
+                        <strong>상세 설명</strong>
+                        전체 프로젝트 일정을 관리하고 소규모 리소스 볼륨을 조율했습니다. 시스템 기획서를 작성하며 핵심 매커니즘을 명세화했고, Claude AI를 활용해 서브 개발을 직접 구현한 뒤 itch.io에 출시까지 완료했습니다.
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-modal-overlay" id="project2Modal">
+                <div class="project-modal">
+                    <button type="button" class="project-modal-close" onclick="closeProjectModal('project2Modal')" aria-label="닫기">✕</button>
+                    <span class="project-modal-eyebrow editable-md" data-edit-id="edit124" contenteditable="false">PROJECT DETAIL</span>
+                    <h3 class="project-modal-title editable-md" data-edit-id="edit125" contenteditable="false">내일할래</h3>
+                    <img src="./project_naeil.png" alt="내일할래 상세 이미지" class="project-modal-img">
+                    <div class="project-modal-info-grid">
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit126" contenteditable="false">장르</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit127" contenteditable="false">방치형 클리커</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit128" contenteditable="false">플랫폼</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit129" contenteditable="false">PC / 모바일</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit130" contenteditable="false">팀 구성</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit131" contenteditable="false">2인 팀</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit132" contenteditable="false">진행기간</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit133" contenteditable="false">2주</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit134" contenteditable="false">담당 역할</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit135" contenteditable="false">메인 개발 및 리소스 제작</span>
+                        </div>
+                    </div>
+                    <div class="project-modal-desc editable-md" data-edit-id="edit136" contenteditable="false">
+                        <strong>상세 설명</strong>
+                        인게임 아트 리소스와 UI/UX 인터페이스를 직접 설계했습니다. 방치형 성장 구조에 맞춘 루프와 메인 개발 로직을 구현했고, 짧은 개발 기간 안에서도 시각적·기능적 완성도를 끌어올렸습니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section id="contact" class="contact-section">
+        <div class="contact-card">
+            <div class="contact-title editable-md" data-edit-id="edit52" contenteditable="false"><p>지금 연락 주세요!</p>
+</div>
+            <div class="contact-item">
+                <img src="./mail.png" alt="Mail Icon" class="contact-icon">
+                <span class="contact-email editable-md" data-edit-id="edit53" contenteditable="false"><p><a href="mailto:minsung042119@gmail.com">minsung042119@gmail.com</a></p>
+</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- UNLOCK 편집 모드에서만 나타나는 서식(폰트/굵기/색상) 툴바 -->
+    <div id="formatToolbar" class="format-toolbar" hidden>
+        <span class="format-toolbar-title">✏️ 서식</span>
+        <label class="fmt-field">
+            <span>폰트</span>
+            <select id="fmtFontFamily">
+                <option value="">기본</option>
+                <option value="'Apple SD Gothic Neo', -apple-system, sans-serif">고딕체</option>
+                <option value="'Nanum Myeongjo', Georgia, serif">명조체</option>
+                <option value="'Courier New', monospace">타자기체</option>
+                <option value="cursive">손글씨체</option>
+            </select>
+        </label>
+        <label class="fmt-field">
+            <span>굵기</span>
+            <select id="fmtFontWeight">
+                <option value="">기본</option>
+                <option value="400">400 (보통)</option>
+                <option value="500">500</option>
+                <option value="600">600</option>
+                <option value="700">700 (굵게)</option>
+                <option value="800">800</option>
+                <option value="900">900 (매우 굵게)</option>
+            </select>
+        </label>
+        <label class="fmt-field">
+            <span>색상</span>
+            <input type="color" id="fmtColor" value="#f5f5f7">
+        </label>
+        <button type="button" id="fmtResetBtn" class="fmt-reset-btn">초기화</button>
+        <span id="fmtHint" class="fmt-hint">문구를 클릭하고 서식을 선택하세요</span>
+    </div>
+
+    <script>
+        let isEditingLocked = true;
+        let currentFormatTarget = null; // 서식 툴바가 적용될 대상 편집 요소
+
+        // ── localStorage 저장/불러오기 ──────────────────────────────
+        // v6: 편집 항목을 DOM 순서(index)가 아닌 고정 data-edit-id로 저장합니다.
+        // 새 항목이 문서 중간에 추가/삭제되어도 기존 저장 내용이 엉뚱한 요소로
+        // 밀려 들어가지 않도록 하기 위함입니다 (예: 제목 자리에 이메일이 뜨는 문제 방지).
+        // v7: 텍스트 내용(html)뿐 아니라 서식(폰트/굵기/색상)도 함께 저장합니다.
+        //
+        // ⚠️ 절대 규칙: 새 버전으로 올릴 때 이전 버전 데이터를 곧바로 지우지 않습니다.
+        // (v6→v7로 올릴 때 이 규칙을 어기고 v6를 마이그레이션 없이 삭제해서, 사용자가
+        //  직접 수정해둔 내용이 사라지는 사고가 있었습니다. 반드시 "새 키가 비어있을 때만
+        //  옛 키 내용을 옮겨 담은 뒤" 옛 키를 지우는 순서를 지켜야 합니다.)
+        const STORAGE_KEY = 'portfolio_content_v7';
+
+        // v6(data-edit-id 기반, 정상 데이터) → v7로 안전하게 이전
+        // : v7에 아직 아무것도 없을 때만, v6 내용을 그대로 옮겨 담습니다.
+        try {
+            if (!localStorage.getItem(STORAGE_KEY)) {
+                const prevRaw = localStorage.getItem('portfolio_content_v6');
+                if (prevRaw) {
+                    const prevData = JSON.parse(prevRaw);
+                    const migrated = {};
+                    Object.keys(prevData).forEach(k => {
+                        const v = prevData[k];
+                        migrated[k] = (typeof v === 'string')
+                            ? { html: v, fontFamily: '', fontWeight: '', color: '' }
+                            : v;
+                    });
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+                }
+            }
+        } catch (e) {}
+
+        // 이전 버전 정리: v6은 위에서 이미 v7로 옮겨 담았으니 이제 지워도 안전합니다.
+        // v2~v5는 애초에 DOM 순서(index) 기반이라 지금 구조와 맞지 않는(신뢰할 수 없는)
+        // 데이터였으므로 계속 정리합니다.
+        try {
+            ['portfolio_content_v2', 'portfolio_content_v3', 'portfolio_content_v4', 'portfolio_content_v5', 'portfolio_content_v6'].forEach(k => localStorage.removeItem(k));
+        } catch (e) {}
+
+        function saveAllContent() {
+            const editables = document.querySelectorAll('.editable-md');
+            const data = {};
+            editables.forEach((el, i) => {
+                const key = el.dataset.editId || `idx${i}`;
+                data[key] = {
+                    html: el.innerHTML,
+                    fontFamily: el.style.fontFamily || '',
+                    fontWeight: el.style.fontWeight || '',
+                    color: el.style.color || ''
+                };
+            });
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            } catch(e) {
+                console.warn('저장 실패:', e);
+            }
+        }
+
+        function loadAllContent() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                const editables = document.querySelectorAll('.editable-md');
+                editables.forEach((el, i) => {
+                    const key = el.dataset.editId || `idx${i}`;
+                    const entry = data[key];
+                    if (entry === undefined) return;
+                    if (typeof entry === 'string') {
+                        // 서식 정보가 없던 이전 저장 형식과의 호환
+                        el.innerHTML = entry;
+                        return;
+                    }
+                    if (entry.html !== undefined) el.innerHTML = entry.html;
+                    if (entry.fontFamily) el.style.fontFamily = entry.fontFamily;
+                    if (entry.fontWeight) el.style.fontWeight = entry.fontWeight;
+                    if (entry.color) el.style.color = entry.color;
+                });
+            } catch(e) {
+                console.warn('불러오기 실패:', e);
+            }
+        }
+        // ────────────────────────────────────────────────────────────
+
+        function toggleEditLock() {
+            isEditingLocked = !isEditingLocked;
+            const lockBtn = document.getElementById('lockToggleBtn');
+            const lockIcon = document.getElementById('lockIcon');
+            const lockText = document.getElementById('lockText');
+            const editables = document.querySelectorAll('.editable-md');
+            const formatToolbar = document.getElementById('formatToolbar');
+
+            if (!isEditingLocked) {
+                lockBtn.classList.add('unlocked');
+                lockIcon.textContent = '🔓';
+                lockText.textContent = 'UNLOCK';
+
+                editables.forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+
+                // 서식(폰트/굵기/색상) 툴바 표시
+                if (formatToolbar) formatToolbar.hidden = false;
+            } else {
+                lockBtn.classList.remove('unlocked');
+                lockIcon.textContent = '🔒';
+                lockText.textContent = 'LOCK';
+
+                editables.forEach(el => {
+                    el.setAttribute('contenteditable', 'false');
+                    // innerHTML에 span 등 HTML 태그가 있으면 그대로 유지 (색상 등 보존)
+                    // 순수 텍스트만 있을 때만 marked로 마크다운 렌더링
+                    const hasHtmlTags = el.innerHTML !== el.innerText;
+                    if (!hasHtmlTags && el.innerText.trim() !== '' && typeof marked !== 'undefined') {
+                        el.innerHTML = marked.parse(el.innerText);
+                    }
+                });
+
+                // 잠글 때 자동 저장
+                saveAllContent();
+
+                // 서식 툴바 숨김 + 편집 대상 참조 해제
+                if (formatToolbar) formatToolbar.hidden = true;
+                currentFormatTarget = null;
+
+                // 잠글 때 열려 있던 프로젝트 상세 팝업이 있다면 닫아줍니다.
+                document.querySelectorAll('.project-modal-overlay.open').forEach(o => o.classList.remove('open'));
+            }
+        }
+
+        // ── 프로젝트 상세 팝업 열기/닫기 ──────────────────────────────
+        function openProjectModal(id) {
+            const overlay = document.getElementById(id);
+            if (overlay) overlay.classList.add('open');
+        }
+
+        function closeProjectModal(id) {
+            const overlay = document.getElementById(id);
+            if (overlay) overlay.classList.remove('open');
+        }
+
+        // ESC 키로 열린 팝업 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.project-modal-overlay.open').forEach(o => o.classList.remove('open'));
+            }
+        });
+
+        // 팝업 바깥(어두운 배경) 클릭 시 닫기
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('project-modal-overlay') && e.target.classList.contains('open')) {
+                e.target.classList.remove('open');
+            }
+        });
+        // ────────────────────────────────────────────────────────────
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 저장된 내용 불러오기 (F5 후에도 유지)
+            loadAllContent();
+
+            // 편집 중 입력할 때마다 자동 저장 (딜레이 적용)
+            let saveTimer = null;
+            document.addEventListener('input', (e) => {
+                if (e.target.classList.contains('editable-md')) {
+                    clearTimeout(saveTimer);
+                    saveTimer = setTimeout(saveAllContent, 800);
+                }
+            });
+
+            // 편집(UNLOCK) 중에는 nav/toc의 # 링크 클릭이 페이지 이동을 일으키지
+            // 않도록 막습니다 (텍스트 편집을 위해 클릭했는데 다른 섹션으로 튕기는 것 방지).
+            document.addEventListener('click', (e) => {
+                if (!isEditingLocked) {
+                    const anchor = e.target.closest('a[href^="#"]');
+                    if (anchor) e.preventDefault();
+                }
+            }, true);
+
+            // ── 서식(폰트/굵기/색상) 툴바 ──────────────────────────
+            const formatToolbar = document.getElementById('formatToolbar');
+            const fmtFontFamily = document.getElementById('fmtFontFamily');
+            const fmtFontWeight = document.getElementById('fmtFontWeight');
+            const fmtColor = document.getElementById('fmtColor');
+            const fmtResetBtn = document.getElementById('fmtResetBtn');
+
+            function rgbToHex(rgbStr) {
+                const m = (rgbStr || '').match(/\d+/g);
+                if (!m || m.length < 3) return '#f5f5f7';
+                return '#' + m.slice(0, 3).map(n => Math.max(0, Math.min(255, parseInt(n, 10))).toString(16).padStart(2, '0')).join('');
+            }
+
+            function syncToolbarFromTarget(el) {
+                if (!el || !fmtFontFamily) return;
+                const knownFonts = ['', "'Apple SD Gothic Neo', -apple-system, sans-serif", "'Nanum Myeongjo', Georgia, serif", "'Courier New', monospace", "cursive"];
+                const ff = el.style.fontFamily || '';
+                fmtFontFamily.value = knownFonts.includes(ff) ? ff : '';
+                fmtFontWeight.value = el.style.fontWeight || '';
+                try {
+                    fmtColor.value = rgbToHex(getComputedStyle(el).color);
+                } catch (e) {}
+            }
+
+            if (formatToolbar && fmtFontFamily && fmtFontWeight && fmtColor) {
+                // 편집 가능한 요소에 포커스가 들어오면 그 요소를 서식 적용 대상으로 기억
+                document.addEventListener('focusin', (e) => {
+                    if (!isEditingLocked && e.target.classList && e.target.classList.contains('editable-md')) {
+                        currentFormatTarget = e.target;
+                        syncToolbarFromTarget(currentFormatTarget);
+                    }
+                });
+
+                function applyFormat() {
+                    if (!currentFormatTarget) return;
+                    if (fmtFontFamily.value) {
+                        currentFormatTarget.style.fontFamily = fmtFontFamily.value;
+                    } else {
+                        currentFormatTarget.style.removeProperty('font-family');
+                    }
+                    if (fmtFontWeight.value) {
+                        currentFormatTarget.style.fontWeight = fmtFontWeight.value;
+                    } else {
+                        currentFormatTarget.style.removeProperty('font-weight');
+                    }
+                    currentFormatTarget.style.color = fmtColor.value;
+                    // 서식 변경도 편집 내용이므로 자동 저장 대상에 포함
+                    clearTimeout(saveTimer);
+                    saveTimer = setTimeout(saveAllContent, 800);
+                }
+
+                fmtFontFamily.addEventListener('change', applyFormat);
+                fmtFontWeight.addEventListener('change', applyFormat);
+                fmtColor.addEventListener('input', applyFormat);
+
+                if (fmtResetBtn) {
+                    fmtResetBtn.addEventListener('click', () => {
+                        if (!currentFormatTarget) return;
+                        currentFormatTarget.style.removeProperty('font-family');
+                        currentFormatTarget.style.removeProperty('font-weight');
+                        currentFormatTarget.style.removeProperty('color');
+                        syncToolbarFromTarget(currentFormatTarget);
+                        clearTimeout(saveTimer);
+                        saveTimer = setTimeout(saveAllContent, 800);
+                    });
+                }
+            }
+            // ────────────────────────────────────────────────────────────
+
+            // 비디오 자동 재생 강제 보장 스크립트
+            const bgVideo = document.getElementById('bgVideo');
+            if (bgVideo) {
+                bgVideo.muted = true;
+                bgVideo.volume = 0;
+                const playPromise = bgVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Autoplay prevented:", error);
+                        const tryPlay = () => {
+                            bgVideo.play().catch(e => console.log("Play failed:", e));
+                            document.removeEventListener('click', tryPlay);
+                            document.removeEventListener('touchstart', tryPlay);
+                        };
+                        document.addEventListener('click', tryPlay);
+                        document.addEventListener('touchstart', tryPlay);
+                    });
+                }
+            }
+
+            const navButtons = document.querySelectorAll('.nav-btn[href^="#"]');
+            const tocItems = document.querySelectorAll('.toc-item[href^="#"]');
+            const targetSections = document.querySelectorAll('#info, #about, #resume, #portfolio, #contact');
+
+            function updateActiveNavigation() {
+                let currentSectionId = '';
+                const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+                targetSections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight / 2 && rect.bottom >= 150) {
+                        currentSectionId = section.getAttribute('id');
+                    }
+                });
+
+                if (scrollY < 100) currentSectionId = 'info';
+                if ((window.innerHeight + scrollY) >= document.body.offsetHeight - 50) {
+                    currentSectionId = 'contact';
+                }
+
+                navButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (currentSectionId && btn.getAttribute('href') === `#${currentSectionId}`) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                tocItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (currentSectionId && item.getAttribute('href') === `#${currentSectionId}`) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateActiveNavigation);
+            window.addEventListener('resize', updateActiveNavigation);
+            updateActiveNavigation();
+        });
+    </script>
+
+</body></html>
