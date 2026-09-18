@@ -1536,7 +1536,7 @@
         function toggleEditLock() {
             // 잠긴 상태(LOCK)에서 편집(UNLOCK)으로 전환하려는 경우에만 비밀번호 확인
             if (isEditingLocked && !devAuthorized) {
-                const input = prompt('개발자 비밀번호를 입력하세요:');
+                const input = prompt('비밀번호를 입력하세요');
                 if (input === null) return; // 취소
                 if (input !== DEV_PASSWORD) {
                     alert('비밀번호가 올바르지 않습니다. 편집 기능을 사용할 수 없습니다.');
