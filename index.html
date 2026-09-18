@@ -1435,6 +1435,26 @@
             </select>
         </label>
         <label class="fmt-field">
+            <span>크기</span>
+            <select id="fmtFontSize">
+                <option value="">기본</option>
+                <option value="12px">12px</option>
+                <option value="13px">13px</option>
+                <option value="14px">14px</option>
+                <option value="15px">15px</option>
+                <option value="16px">16px</option>
+                <option value="18px">18px</option>
+                <option value="20px">20px</option>
+                <option value="24px">24px</option>
+                <option value="28px">28px</option>
+                <option value="32px">32px</option>
+                <option value="36px">36px</option>
+                <option value="40px">40px</option>
+                <option value="48px">48px</option>
+                <option value="56px">56px</option>
+            </select>
+        </label>
+        <label class="fmt-field">
             <span>색상</span>
             <input type="color" id="fmtColor" value="#f5f5f7">
         </label>
@@ -1469,7 +1489,7 @@
                     Object.keys(prevData).forEach(k => {
                         const v = prevData[k];
                         migrated[k] = (typeof v === 'string')
-                            ? { html: v, fontFamily: '', fontWeight: '', color: '' }
+                            ? { html: v, fontFamily: '', fontWeight: '', fontSize: '', color: '' }
                             : v;
                     });
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
@@ -1493,6 +1513,7 @@
                     html: el.innerHTML,
                     fontFamily: el.style.fontFamily || '',
                     fontWeight: el.style.fontWeight || '',
+                    fontSize: el.style.fontSize || '',
                     color: el.style.color || ''
                 };
             });
@@ -1521,6 +1542,7 @@
                     if (entry.html !== undefined) el.innerHTML = entry.html;
                     if (entry.fontFamily) el.style.fontFamily = entry.fontFamily;
                     if (entry.fontWeight) el.style.fontWeight = entry.fontWeight;
+                    if (entry.fontSize) el.style.fontSize = entry.fontSize;
                     if (entry.color) el.style.color = entry.color;
                 });
             } catch(e) {
@@ -1642,6 +1664,7 @@
             const formatToolbar = document.getElementById('formatToolbar');
             const fmtFontFamily = document.getElementById('fmtFontFamily');
             const fmtFontWeight = document.getElementById('fmtFontWeight');
+            const fmtFontSize = document.getElementById('fmtFontSize');
             const fmtColor = document.getElementById('fmtColor');
             const fmtResetBtn = document.getElementById('fmtResetBtn');
 
@@ -1657,12 +1680,13 @@
                 const ff = el.style.fontFamily || '';
                 fmtFontFamily.value = knownFonts.includes(ff) ? ff : '';
                 fmtFontWeight.value = el.style.fontWeight || '';
+                fmtFontSize.value = el.style.fontSize || '';
                 try {
                     fmtColor.value = rgbToHex(getComputedStyle(el).color);
                 } catch (e) {}
             }
 
-            if (formatToolbar && fmtFontFamily && fmtFontWeight && fmtColor) {
+            if (formatToolbar && fmtFontFamily && fmtFontWeight && fmtFontSize && fmtColor) {
                 // 편집 가능한 요소에 포커스가 들어오면 그 요소를 서식 적용 대상으로 기억
                 document.addEventListener('focusin', (e) => {
                     if (!isEditingLocked && e.target.classList && e.target.classList.contains('editable-md')) {
@@ -1683,6 +1707,11 @@
                     } else {
                         currentFormatTarget.style.removeProperty('font-weight');
                     }
+                    if (fmtFontSize.value) {
+                        currentFormatTarget.style.fontSize = fmtFontSize.value;
+                    } else {
+                        currentFormatTarget.style.removeProperty('font-size');
+                    }
                     currentFormatTarget.style.color = fmtColor.value;
                     // 서식 변경도 편집 내용이므로 자동 저장 대상에 포함
                     clearTimeout(saveTimer);
@@ -1691,6 +1720,7 @@
 
                 fmtFontFamily.addEventListener('change', applyFormat);
                 fmtFontWeight.addEventListener('change', applyFormat);
+                fmtFontSize.addEventListener('change', applyFormat);
                 fmtColor.addEventListener('input', applyFormat);
 
                 if (fmtResetBtn) {
@@ -1698,6 +1728,7 @@
                         if (!currentFormatTarget) return;
                         currentFormatTarget.style.removeProperty('font-family');
                         currentFormatTarget.style.removeProperty('font-weight');
+                        currentFormatTarget.style.removeProperty('font-size');
                         currentFormatTarget.style.removeProperty('color');
                         syncToolbarFromTarget(currentFormatTarget);
                         clearTimeout(saveTimer);
