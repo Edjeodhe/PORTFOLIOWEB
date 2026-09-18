@@ -1,2 +1,6 @@
 .DS_Store
 Thumbs.db
+
+# 미사용 영상 (배포 제외, 로컬 백업용으로만 보관)
+Last_Sanctuary_PV_final_1080p.mp4
+Last_Sanctuary_PV_final_1080p_no_subtitles.mp4
