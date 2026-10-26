@@ -663,6 +663,36 @@
             border-bottom-color: rgba(0, 0, 0, 0.08);
         }
 
+        /* 흰 영역은 휠 한 번에 통째로 넘어가므로, 한 화면 안에 내용이 다 보이도록 여백을 줄여 위로 당깁니다. */
+        .light-section .section {
+            padding-top: 88px;
+            justify-content: flex-start;
+        }
+        .light-section .headline {
+            font-size: clamp(30px, 3.6vw, 46px);
+            margin-bottom: 12px;
+        }
+        .light-section .sub-text { margin-bottom: 24px; }
+        .light-section .card { padding: 28px; }
+        .light-section .grid-2,
+        .light-section .about-cover-grid { gap: 16px; }
+        .about-stats-imgs { width: 460px; }
+
+        /* 노트북처럼 세로가 짧은 화면에서는 한 단계 더 촘촘하게 */
+        @media (max-height: 880px) {
+            .light-section .section { padding-top: 80px; }
+            .light-section .section > .eyebrow { margin-bottom: 6px; }
+            .light-section .cta-btn { padding: 8px 18px; }
+            .light-section .headline { font-size: clamp(28px, 3vw, 38px); margin-bottom: 8px; }
+            .light-section .sub-text { margin-bottom: 16px; }
+            .light-section .card { padding: 20px 24px; }
+            .light-section .grid-2,
+            .light-section .about-cover-grid { gap: 12px; }
+            .light-section .metric-grid { gap: 10px; margin-top: 12px; }
+            .light-section .metric-badge { padding: 10px 18px; }
+            .about-stats-imgs { width: 400px; }
+        }
+
         /* Metric Badge */
         .metric-grid {
             display: grid;
@@ -1088,7 +1118,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="flex-shrink: 0; width: 520px; display: flex; flex-direction: column; gap: 10px;">
+                        <div class="about-stats-imgs" style="flex-shrink: 0; display: flex; flex-direction: column; gap: 10px;">
                             <img src="./itch_stats.png" alt="itch.io 통계 스크린샷" style="width: 100%; height: auto; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); display: block;">
                             <img src="./itch_graph.png" alt="itch.io 분석 그래프" style="width: 100%; height: auto; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); display: block;">
                         </div>
@@ -1321,6 +1351,27 @@
                         <img src="./project_naeil.png" alt="내일할래 프로젝트 이미지" class="project-img">
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="project-card-inner">
+                        <div class="project-card-content">
+                            <span class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit148" contenteditable="false">Featured Project 03</span>
+                            <h3 style="font-size: 24px; font-weight: 700; margin: 8px 0;" class="editable-md" data-edit-id="edit149" contenteditable="false"><p>MoreMustMush</p>
+</h3>
+                            <p style="font-size: 13px; color: var(--color-graphite); margin-bottom: 16px;" class="editable-md" data-edit-id="edit150" contenteditable="false">방치형 벽돌깨기 게임 | 개인 프로젝트 | itch.io 출시 (개발 중)</p>
+                            <div style="font-size: 14px; line-height: 1.6; color: var(--color-obsidian);" class="editable-md" data-edit-id="edit151" contenteditable="false">
+                                <strong>담당 역할: 기획 및 개발</strong><br>
+                                - 버섯 75종 도감 · 균사 트리 80+ 업그레이드 성장 구조 설계<br>
+                                - 5개 지역·날씨, 10스테이지마다 보스 등 진행 구조 기획<br>
+                                - AI 도구를 활용한 개발 및 itch.io 출시 · 패치 운영
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <button class="cta-btn" onclick="openProjectModal('project3Modal')"><span class="editable-md" data-edit-id="edit152" contenteditable="false">자세히 보기 →</span></button>
+                            </div>
+                        </div>
+                        <img src="./project_moremustmush.png" alt="MoreMustMush 프로젝트 이미지" class="project-img">
+                    </div>
+                </div>
             </div>
 
             <!-- 프로젝트 상세 정보 팝업: LOCK(감상) 모드에서는 버튼 클릭 시 팝업으로 뜨고,
@@ -1391,6 +1442,41 @@
                     <div class="project-modal-desc editable-md" data-edit-id="edit136" contenteditable="false">
                         <strong>상세 설명</strong>
                         인게임 아트 리소스와 UI/UX 인터페이스를 직접 설계했습니다. 방치형 성장 구조에 맞춘 루프와 메인 개발 로직을 구현했고, 짧은 개발 기간 안에서도 시각적·기능적 완성도를 끌어올렸습니다.
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-modal-overlay" id="project3Modal">
+                <div class="project-modal">
+                    <button type="button" class="project-modal-close" onclick="closeProjectModal('project3Modal')" aria-label="닫기">✕</button>
+                    <span class="project-modal-eyebrow editable-md" data-edit-id="edit153" contenteditable="false">PROJECT DETAIL</span>
+                    <h3 class="project-modal-title editable-md" data-edit-id="edit154" contenteditable="false">MoreMustMush</h3>
+                    <img src="./project_moremustmush.png" alt="MoreMustMush 상세 이미지" class="project-modal-img">
+                    <div class="project-modal-info-grid">
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit155" contenteditable="false">장르</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit156" contenteditable="false">방치형 벽돌깨기</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit157" contenteditable="false">플랫폼</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit158" contenteditable="false">웹 (itch.io)</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit159" contenteditable="false">팀 구성</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit160" contenteditable="false">개인 프로젝트</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit161" contenteditable="false">진행기간</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit162" contenteditable="false">개발 중 (2026.10 공개)</span>
+                        </div>
+                        <div class="project-modal-info-item">
+                            <span class="project-modal-info-label editable-md" data-edit-id="edit163" contenteditable="false">담당 역할</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit164" contenteditable="false">기획 및 개발</span>
+                        </div>
+                    </div>
+                    <div class="project-modal-desc editable-md" data-edit-id="edit165" contenteditable="false">
+                        <strong>상세 설명</strong>
+                        세계수 주변 숲에서 버섯을 수확하는 방치형 벽돌깨기 게임입니다. 수확기를 끌어 발사하고 바를 움직여 버섯을 캐며, 실제 버섯 75종을 도감에 기록합니다. 균사 트리의 80개 이상 업그레이드, 날씨가 다른 5개 지역, 10스테이지마다 등장하는 보스, 8단계로 자라는 세계수까지 성장 구조 전반을 기획했습니다. 아트·사운드와 코드 일부는 AI 도구의 도움을 받았고, 컨셉·메커니즘·밸런싱 등 게임 디자인은 직접 진행했습니다. itch.io에 공개한 뒤 패치 노트를 꾸준히 올리며 운영하고 있습니다.
                     </div>
                 </div>
             </div>
