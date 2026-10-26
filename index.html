@@ -1796,6 +1796,71 @@
             window.addEventListener('scroll', updateActiveNavigation);
             window.addEventListener('resize', updateActiveNavigation);
             updateActiveNavigation();
+
+            // ── 마우스 휠: 검은 영역 ↔ 흰 영역 경계에서 한 번에 넘어가기 ──
+            // 패널 안에서는 평소처럼 스크롤하다가, 휠 한 번에 다음(또는 이전) 색 영역의
+            // 경계가 화면에 걸리게 되면 반쯤 걸친 상태 없이 그 영역으로 바로 이동합니다.
+            const colorPanels = document.querySelectorAll('body > .hero-video-section, body > .light-section, body > section');
+            const SNAP_DURATION = 700;
+            let snapping = false;
+            let lastSnapWheel = 0;
+
+            function animateScrollTo(target) {
+                const start = window.scrollY;
+                const distance = target - start;
+                const startTime = performance.now();
+                snapping = true;
+
+                function step(now) {
+                    const t = Math.min((now - startTime) / SNAP_DURATION, 1);
+                    const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                    window.scrollTo({ top: start + distance * eased, behavior: 'instant' });
+                    if (t < 1) requestAnimationFrame(step);
+                    else snapping = false;
+                }
+                requestAnimationFrame(step);
+            }
+
+            window.addEventListener('wheel', (e) => {
+                if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.deltaY === 0) return;
+                if (document.querySelector('.project-modal-overlay.open')) return;
+
+                // 이동 중이거나 이동 직후 이어지는 관성 휠은 무시 (한 번에 두 칸 넘어가는 것 방지)
+                const now = performance.now();
+                if (snapping || now - lastSnapWheel < 250) {
+                    e.preventDefault();
+                    lastSnapWheel = now;
+                    return;
+                }
+
+                const delta = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1);
+                const y = window.scrollY;
+                const vh = window.innerHeight;
+                const maxY = document.documentElement.scrollHeight - vh;
+                const panels = [...colorPanels].map(p => ({
+                    top: Math.round(p.getBoundingClientRect().top + y),
+                    light: p.classList.contains('light-section')
+                }));
+                // 현재 패널: 화면 맨 위가 걸친 패널 (페이지 끝에 닿았으면 화면에 보이는 맨 아래 패널)
+                const edge = y >= maxY - 1 ? y + vh - 1 : y + 1;
+                let i = 0;
+                while (i + 1 < panels.length && panels[i + 1].top <= edge) i++;
+                const cur = panels[i], next = panels[i + 1], prev = panels[i - 1];
+                let target = null;
+
+                if (delta > 0) {
+                    // 흰 영역은 휠 한 번에 통째로 넘기고, 검은 영역은 경계에 닿았을 때 넘깁니다.
+                    if (next && (cur.light || y + vh + delta > next.top + 1)) target = Math.min(next.top, maxY);
+                } else if (prev) {
+                    if (cur.light) target = Math.max(cur.top - vh, 0);
+                    else if (y + delta < cur.top) target = prev.light ? prev.top : Math.max(cur.top - vh, 0);
+                }
+
+                if (target === null) return;
+                e.preventDefault();
+                lastSnapWheel = now;
+                if (Math.abs(target - y) > 1) animateScrollTo(target);
+            }, { passive: false });
         });
     </script>
 
