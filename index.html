@@ -2194,7 +2194,8 @@
                 return items;
             }
 
-            const load = url => fetch(url).then(r => { if (!r.ok) throw new Error(url); return r.json(); });
+            // 'no-cache': 브라우저에 저장된 사본이 있어도 서버에 바뀌었는지 확인 (GitHub Pages는 10분 캐시라 수정본이 늦게 보이는 것 방지)
+            const load = url => fetch(url, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(url); return r.json(); });
 
             function setCamera(s, fx, fy) {
                 camera.setAttribute('transform', `translate(${VB_W / 2} ${VB_H / 2}) scale(${s}) translate(${-fx} ${-fy})`);
