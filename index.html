@@ -1100,13 +1100,10 @@
 </head>
 <body>
     <script>
-        // 인트로는 탭(세션)당 한 번만 재생합니다. 주소 뒤에 ?intro 를 붙이면 다시 볼 수 있습니다.
+        // 인트로는 페이지를 열거나 새로고침(F5)할 때마다 재생합니다. (움직임 줄이기 설정 사용자는 제외)
         (function () {
-            let seen = false;
-            try { seen = sessionStorage.getItem('introSeen') === '1'; } catch (e) {}
-            const forced = /[?&]intro\b/.test(location.search);
             const reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (forced || (!seen && !reduced)) {
+            if (!reduced) {
                 document.documentElement.classList.add('intro-playing', 'intro-pending');
             }
         })();
@@ -2164,7 +2161,6 @@
             const rand = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
 
             if (!root.classList.contains('intro-playing')) return;
-            try { sessionStorage.setItem('introSeen', '1'); } catch (e) {}
             window.scrollTo(0, 0);
 
             const animations = [];
@@ -2456,6 +2452,11 @@
                     const pieces = [];
                     DRAW_ORDER.forEach(name => {
                         rigGroups[name] = el('g', {}, art);
+                        // 몸 파츠는 실루엣을 양피지색으로 먼저 깔아서, 뒤에 있는 바위 무늬가 손·몸 안으로 비치지 않게 함
+                        if (rig[name].sil) {
+                            const sil = el('path', { d: rig[name].sil, fill: '#e7d9bb', stroke: 'none' }, rigGroups[name]);
+                            sil.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: 500, fill: 'backwards' });
+                        }
                         const xf = pose0[name];
                         rig[name].p.forEach(p => {
                             const w = xf ? xf.at([p.x, p.y]) : [p.x, p.y];
