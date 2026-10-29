@@ -35,6 +35,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap">
 
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 
@@ -986,9 +989,128 @@
             .contact-card { padding: 32px 20px; }
             .contact-email { font-size: 15px; }
         }
+
+        /* ==========================================================================
+           Parchment Hero: 시시포스 드로잉 → 머리 확대 → 땀방울 낙하 → 물결 → 초상화·문구 드로잉
+           ========================================================================== */
+        :root {
+            --parchment: #e9dcbf;
+            --ink: #2b1d12;
+            --parchment-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.25 0 0 0 0 0.12 0 0 0 0.32 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+            --parchment-blotch: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='900'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.006' numOctaves='4' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.30 0 0 0 0 0.12 0 0 0 0.55 -0.12'/></filter><rect width='100%' height='100%' filter='url(%23b)'/></svg>");
+        }
+
+        .hero-video-section.parchment-hero {
+            background:
+                radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(92, 56, 22, 0.42) 100%),
+                var(--parchment-noise),
+                var(--parchment-blotch),
+                var(--parchment);
+            background-size: auto, 260px 260px, 900px 900px, auto;
+        }
+
+        .hero-scene {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero-scene path { vector-effect: non-scaling-stroke; }
+
+        html.intro-playing { overflow: hidden; }
+        .intro-skip {
+            display: none;
+            position: absolute;
+            right: 24px;
+            bottom: 24px;
+            z-index: 6;
+            padding: 8px 16px;
+            border: 1px solid rgba(43, 29, 18, 0.35);
+            border-radius: var(--radius-pill);
+            background: rgba(233, 220, 191, 0.6);
+            color: var(--ink);
+            font-family: var(--font-family-system);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+        .intro-skip:hover { background: rgba(233, 220, 191, 0.95); }
+        html.intro-playing .intro-skip { display: block; }
+        html.intro-playing .header,
+        html.intro-playing .side-toc { opacity: 0; pointer-events: none; }
+        .header, .side-toc { transition: opacity 0.8s ease; }
+
+        /* 양피지 위 첫 화면은 잉크 색 팔레트로 (이 영역 안에서만 색 토큰을 덮어씀) */
+        .parchment-hero #info {
+            --color-frost-white: var(--ink);
+            --color-paper-white: var(--ink);
+            --color-platinum: #6b5a45;
+            --color-signal-orange: #b4470f;
+            --color-apple-blue: #7a4a1c;
+            --color-obsidian: rgba(255, 248, 230, 0.42);
+            color: var(--ink);
+        }
+        .parchment-hero #info .headline {
+            font-family: 'Nanum Myeongjo', Georgia, serif;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        .parchment-hero #info .card {
+            border-color: rgba(43, 29, 18, 0.22);
+            backdrop-filter: blur(2px);
+        }
+        .parchment-hero #info .card:hover { border-color: rgba(43, 29, 18, 0.5); }
+        .parchment-hero #info .info-card-num { color: #b4470f; }
+        .parchment-hero #info .info-card-desc { color: rgba(43, 29, 18, 0.75); }
+
+        /* 메인 첫 화면: 왼쪽 초상화 + 오른쪽 문구 */
+        .hero-intro-row {
+            display: flex;
+            align-items: center;
+            gap: clamp(28px, 4vw, 56px);
+        }
+        .hero-intro-text { flex: 1; min-width: 0; position: relative; }
+        .hero-portrait {
+            flex: 0 0 auto;
+            width: clamp(170px, 19vw, 260px);
+        }
+        .hero-portrait-svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+        /* 인트로가 끝나기 전까지 첫 화면 요소를 숨겨 두었다가 순서대로 등장 */
+        html.intro-pending .hero-intro-row:not(.portrait-on) .hero-portrait { opacity: 0; }
+        html.intro-pending .hero-intro-row:not(.headline-on) .headline { opacity: 0; }
+        html.intro-pending #info .eyebrow,
+        html.intro-pending #info .sub-text,
+        html.intro-pending #info > div:not(.hero-intro-row) { opacity: 0; transform: translateY(14px); }
+        .parchment-hero #info > div:not(.hero-intro-row) { display: none; }
+        #info .eyebrow, #info .sub-text, #info > div:not(.hero-intro-row) {
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        #info .headline { transition: opacity 0.5s ease; }
+
+        @media (max-width: 700px) {
+            .hero-intro-row { flex-direction: column; align-items: flex-start; gap: 24px; }
+            .hero-portrait { width: 150px; }
+            .intro-skip { right: 16px; bottom: 16px; }
+        }
     </style>
 </head>
 <body>
+    <script>
+        // 인트로는 탭(세션)당 한 번만 재생합니다. 주소 뒤에 ?intro 를 붙이면 다시 볼 수 있습니다.
+        (function () {
+            let seen = false;
+            try { seen = sessionStorage.getItem('introSeen') === '1'; } catch (e) {}
+            const forced = /[?&]intro\b/.test(location.search);
+            const reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (forced || (!seen && !reduced)) {
+                document.documentElement.classList.add('intro-playing', 'intro-pending');
+            }
+        })();
+    </script>
 
     <header class="header">
         <div class="brand-logo editable-md" data-edit-id="edit54" contenteditable="false">KIM MINSUNG</div>
@@ -1012,17 +1134,30 @@
         <a href="#contact" class="toc-item editable-md" data-edit-id="edit64" contenteditable="false">CONTACT</a>
     </aside>
 
-    <div class="hero-video-section">
-        <video class="bg-video" id="bgVideo" autoplay="" loop="" muted="" playsinline="" webkit-playsinline="" preload="auto">
-            <source src="Last_Sanctuary_PV_final_1080p_no_subtitles_v2.mp4" type="video/mp4">
-            브라우저가 비디오 태그를 지원하지 않습니다.
-        </video>
-        <div class="video-overlay"></div>
+    <div class="hero-video-section parchment-hero">
+        <!-- 시시포스 장면: intro/scene.json 의 윤곽선을 스크립트가 불러와 그립니다 (실패 시 이미지로 대체) -->
+        <svg class="hero-scene" id="heroScene" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <g id="sceneCamera">
+                <g id="sceneArt" fill="#2b1d12" stroke="#2b1d12"></g>
+            </g>
+            <g id="sceneDrop"></g>
+            <g id="sceneRipple" fill="none" stroke="#2b1d12"></g>
+        </svg>
+        <button type="button" class="intro-skip" id="introSkip">SKIP ›</button>
 
         <section id="info" class="section">
+            <div class="hero-intro-row" id="heroIntroRow">
+                <div class="hero-portrait" aria-hidden="true">
+                    <svg class="hero-portrait-svg" id="heroPortraitSvg" viewBox="0 0 768 1152" fill="#2b1d12" stroke="#2b1d12">
+                        <image href="./intro/portrait.webp" width="768" height="1152"/>
+                    </svg>
+                </div>
+                <div class="hero-intro-text">
             <div class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit65" contenteditable="false">01. OVERVIEW</div>
             <h1 class="headline editable-md" data-edit-id="edit0" contenteditable="false"><span style="color: var(--color-signal-orange);">포기하지 않고 끝까지 도전</span>하는<br>기획자 김민성입니다</h1>
             <p class="sub-text editable-md" data-edit-id="edit1" contenteditable="false">저는 반복되는 기획과 분석 과정에서 실패를 딛고 성장하는 사람입니다</p>
+                </div>
+            </div>
 
             <div style="margin-top: 10px;">
                 <h3 style="font-size: 16px; color: var(--color-apple-blue); margin-bottom: 16px;" class="editable-md" data-edit-id="edit66" contenteditable="false">어떻게 행동하는가?</h3>
@@ -1908,6 +2043,7 @@
             }
 
             window.addEventListener('wheel', (e) => {
+                if (document.documentElement.classList.contains('intro-playing')) { e.preventDefault(); return; }
                 if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.deltaY === 0) return;
                 if (document.querySelector('.project-modal-overlay.open')) return;
 
@@ -1948,6 +2084,445 @@
                 if (Math.abs(target - y) > 1) animateScrollTo(target);
             }, { passive: false });
         });
+    </script>
+
+    <script>
+        // ── 메인 인트로: 시시포스 드로잉 → 머리 확대 → 땀방울 낙하(카메라 추적) → 물결 → 초상화·문구 드로잉 ──
+        // 그림은 intro/*.json(윤곽선 조각)을 불러와 "선이 그려진 뒤 잉크가 차오르는" 방식으로 보여줍니다.
+        // 시시포스·초상화·땀방울 원본은 Codex 이미지 생성으로 만든 펜화이며, 정지 상태용 이미지는 intro/*.webp 입니다.
+        (function () {
+            const root = document.documentElement;
+            const scene = document.getElementById('heroScene');
+            const camera = document.getElementById('sceneCamera');
+            const art = document.getElementById('sceneArt');
+            const dropLayer = document.getElementById('sceneDrop');
+            const rippleLayer = document.getElementById('sceneRipple');
+            const row = document.getElementById('heroIntroRow');
+            const portraitSvg = document.getElementById('heroPortraitSvg');
+            const skipBtn = document.getElementById('introSkip');
+            if (!scene || !row) return;
+
+            const NS = 'http://www.w3.org/2000/svg';
+            const INK = '#2b1d12';
+            const VB_W = 1536, VB_H = 1024;
+            const IMPACT = [768, 640];      // 땀방울이 떨어져 물결이 퍼지는 화면 위치 (viewBox 좌표)
+            const T = {
+                draw: 2.4,
+                walkStart: 1.4, cycle: 2.6,
+                zoomStart: 4.0, zoomEnd: 5.3, zoomScale: 4.6,
+                dropForm: 5.15, dropFall: 5.7, impact: 7.0,
+                settle: 7.7
+            };
+
+            // ── 퍼펫 리그 (intro/rig.json: Codex로 뽑은 파츠 시트·바위·비탈을 윤곽선으로 변환한 것)
+            // 파츠 좌표는 파츠 시트 이미지 기준. 다리는 엉덩이·무릎·발목 관절을 2-bone IK로 풀어서 걷게 합니다.
+            const PART_SCALE = 0.62;                  // 파츠 시트 → 장면 크기
+            const PARTS = {
+                upper: { hip: [175, 600], hipNear: [200, 612], hipFar: [160, 600], brow: [440, 296], hand: [646, 322] },
+                thighN: { top: [780, 330], bottom: [775, 590] },
+                shinN: { top: [965, 420], ankle: [935, 735], sole: 795 },
+                thighF: { top: [1175, 330], bottom: [1180, 595] },
+                shinF: { top: [1385, 410], ankle: [1350, 735], sole: 795 },
+                boulder: { center: [512, 507], r: 450 }
+            };
+            const DRAW_ORDER = ['hill', 'shinF', 'thighF', 'boulder', 'shinN', 'thighN', 'upper'];
+            // 비탈 땅 선: y = -0.3219x + 956.5 (hill 이미지 = 장면 좌표)
+            const G0 = [0, 956.5], U = [0.9519, -0.3064], N = [-0.3064, -0.9519]; // U: 오르막 방향, N: 땅에서 위쪽
+            const ground = (u, h) => [G0[0] + U[0] * u + N[0] * h, G0[1] + U[1] * u + N[1] * h];
+            const HIP_H = 262;                        // 엉덩이 높이(땅에서)
+            const FOOT_FRONT = -15, FOOT_BACK = -235; // 엉덩이 기준 발 위치 범위(오르막 방향): 앞발은 엉덩이 밑, 뒷발은 멀리 뒤로
+            const STANCE = 0.62;                      // 한 주기 중 발이 땅을 딛고 있는 비율 (양발 디딤 구간이 생겨 무게감)
+            const SPEED = (FOOT_FRONT - FOOT_BACK) / STANCE;  // 주기당 몸이 나아가는 거리
+            const LEAN = 13;                           // 상체를 앞으로 숙이는 기본 각도(도)
+            const LIFT = 42;                          // 발 드는 높이
+            const HIP_U0 = 330;                       // 시작할 때 엉덩이 위치(비탈을 따라)
+            const BOULDER_R = PARTS.boulder.r * PART_SCALE;
+
+            const sub = (a, b) => [a[0] - b[0], a[1] - b[1]];
+            const len = v => Math.hypot(v[0], v[1]);
+            const ang = v => Math.atan2(v[1], v[0]);
+            // 파츠의 점 A를 장면의 점 Aw에 두고 theta만큼 회전
+            const makeXf = (A, Aw, theta) => ({ A, Aw, theta,
+                at: pt => {
+                    const dx = (pt[0] - A[0]) * PART_SCALE, dy = (pt[1] - A[1]) * PART_SCALE;
+                    return [Aw[0] + dx * Math.cos(theta) - dy * Math.sin(theta), Aw[1] + dx * Math.sin(theta) + dy * Math.cos(theta)];
+                },
+                attr: () => `translate(${Aw[0].toFixed(2)} ${Aw[1].toFixed(2)}) rotate(${(theta * 180 / Math.PI).toFixed(3)}) scale(${PART_SCALE}) translate(${-A[0]} ${-A[1]})`
+            });
+            const L1 = len(sub(PARTS.thighN.bottom, PARTS.thighN.top)) * PART_SCALE;
+            const L2 = len(sub(PARTS.shinN.ankle, PARTS.shinN.top)) * PART_SCALE;
+            // 2-bone IK: 엉덩이 H, 발목 A → 무릎 (무릎은 오르막 쪽으로 굽힘)
+            function solveKnee(H, A) {
+                const v = sub(A, H), d = Math.max(Math.abs(L1 - L2) + 1, Math.min(len(v), L1 + L2 - 0.5));
+                const a = Math.acos((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d)), base = ang(v);
+                const k1 = [H[0] + L1 * Math.cos(base + a), H[1] + L1 * Math.sin(base + a)];
+                const k2 = [H[0] + L1 * Math.cos(base - a), H[1] + L1 * Math.sin(base - a)];
+                return (k1[0] - H[0]) * U[0] + (k1[1] - H[1]) * U[1] > (k2[0] - H[0]) * U[0] + (k2[1] - H[1]) * U[1] ? k1 : k2;
+            }
+            // 발: 디딤(앞→뒤로 미끄러지듯 몸이 전진) / 들기(뒤→앞으로 들어 올려 내딛음)
+            function footRel(q) {
+                if (q < STANCE) return { u: lerp(FOOT_FRONT, FOOT_BACK, q / STANCE), lift: 0 };
+                const s2 = (q - STANCE) / (1 - STANCE);
+                return { u: lerp(FOOT_BACK, FOOT_FRONT, easeInOut(s2)), lift: LIFT * Math.sin(Math.PI * Math.min(1, s2 * 1.15)) };
+            }
+            let boulderDU = 0; // 엉덩이와 바위 사이 거리(비탈 방향). 처음 자세에서 손이 바위에 닿도록 계산
+            function poseAt(t) {
+                const cyc = Math.max(0, t - T.walkStart) / T.cycle;          // 걷기 주기(실수, 한 주기 = 두 걸음)
+                const steps = cyc * 2;
+                const hipU = HIP_U0 + SPEED * cyc;
+                const bob = 6 * Math.abs(Math.sin(Math.PI * steps));
+                const H = ground(hipU, HIP_H - bob);
+                const lean = (LEAN + 1.6 * Math.sin(Math.PI * 2 * steps)) * Math.PI / 180;
+                const upper = makeXf(PARTS.upper.hip, H, lean);
+                const pose = { upper, hipU, steps };
+                [['N', 0], ['F', 0.5]].forEach(([side, off]) => {
+                    const q = ((cyc + off) % 1 + 1) % 1;
+                    const fr = footRel(q);
+                    const shin = PARTS['shin' + side], thigh = PARTS['thigh' + side];
+                    const ankle = ground(hipU + fr.u, (shin.sole - shin.ankle[1]) * PART_SCALE + fr.lift);
+                    const hip = upper.at(PARTS.upper['hip' + (side === 'N' ? 'Near' : 'Far')]);
+                    const knee = solveKnee(hip, ankle);
+                    pose['thigh' + side] = makeXf(thigh.top, hip, ang(sub(knee, hip)) - ang(sub(thigh.bottom, thigh.top)));
+                    pose['shin' + side] = makeXf(shin.top, knee, ang(sub(ankle, knee)) - ang(sub(shin.ankle, shin.top)));
+                });
+                const bc = ground(hipU + boulderDU, BOULDER_R);
+                pose.boulder = makeXf(PARTS.boulder.center, bc, (hipU - HIP_U0) / BOULDER_R);
+                return pose;
+            }
+            // 처음 자세에서 손이 바위 표면에 닿는 위치 찾기
+            (function () {
+                const hand = makeXf(PARTS.upper.hip, ground(HIP_U0, HIP_H), LEAN * Math.PI / 180).at(PARTS.upper.hand);
+                let lo = 0, hi = 800;
+                for (let i = 0; i < 40; i++) {
+                    const mid = (lo + hi) / 2;
+                    if (len(sub(ground(HIP_U0 + mid, BOULDER_R), hand)) < BOULDER_R * 0.98) lo = mid; else hi = mid;
+                }
+                boulderDU = lo;
+            })();
+            const rigGroups = {};
+            function applyPose(pose) {
+                for (const name in rigGroups) if (pose[name]) rigGroups[name].setAttribute('transform', pose[name].attr());
+            }
+
+            const el = (tag, attrs, parent) => {
+                const n = document.createElementNS(NS, tag);
+                for (const k in attrs) n.setAttribute(k, attrs[k]);
+                if (parent) parent.appendChild(n);
+                return n;
+            };
+            const clamp01 = v => Math.max(0, Math.min(1, v));
+            const lerp = (a, b, t) => a + (b - a) * t;
+            const seg = (t, a, b) => clamp01((t - a) / (b - a));
+            const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            const easeOut = t => 1 - Math.pow(1 - t, 3);
+            let seed = 7;
+            const rand = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+
+            if (!root.classList.contains('intro-playing')) return;
+            try { sessionStorage.setItem('introSeen', '1'); } catch (e) {}
+            window.scrollTo(0, 0);
+
+            const animations = [];
+            let skipped = false, finished = false;
+
+            // 윤곽선 조각들을 만들고, 왼쪽→오른쪽으로 훑듯이 순서대로 그려지게 예약
+            function drawPieces(data, parent, total, opts) {
+                const o = Object.assign({ strokeWidth: 1, sweepX: 0.6, sweepY: 0.25 }, opts);
+                const maxL = Math.max(...data.p.map(p => p.l));
+                const frag = document.createDocumentFragment();
+                const items = data.p.map(p => {
+                    const node = el('path', { d: p.d, 'fill-rule': 'evenodd', 'fill-opacity': 0, 'stroke-width': o.strokeWidth }, p.parent || frag);
+                    const key = o.sweepX * p.x / data.w + o.sweepY * p.y / data.h + 0.15 * rand() - 0.2 * Math.min(1, p.l / maxL * 6);
+                    return { node, l: p.l, key };
+                });
+                parent.appendChild(frag);
+                const keys = items.map(i => i.key), kMin = Math.min(...keys), kMax = Math.max(...keys);
+                items.forEach(i => {
+                    const dur = Math.min(Math.max(i.l / 900, 0.25), 0.9) * total * 0.4;
+                    const delay = (i.key - kMin) / (kMax - kMin || 1) * (total - dur);
+                    i.node.style.strokeDasharray = i.l;
+                    i.node.style.strokeDashoffset = i.l;
+                    const a = i.node.animate([
+                        { strokeDashoffset: i.l, fillOpacity: 0 },
+                        { strokeDashoffset: 0, fillOpacity: 0, offset: 0.65 },
+                        { strokeDashoffset: 0, fillOpacity: 1 }
+                    ], { duration: dur * 1000, delay: delay * 1000, fill: 'forwards', easing: 'ease-out' });
+                    animations.push(a);
+                    i.anim = a;
+                });
+                return items;
+            }
+
+            const load = url => fetch(url).then(r => { if (!r.ok) throw new Error(url); return r.json(); });
+
+            function setCamera(s, fx, fy) {
+                camera.setAttribute('transform', `translate(${VB_W / 2} ${VB_H / 2}) scale(${s}) translate(${-fx} ${-fy})`);
+            }
+
+            // ── 땀방울과 물결
+            let dropGroup = null, dropData = null;
+            function buildDrop(data) {
+                dropData = data;
+                // 빛 처리용 그라디언트: 물방울 몸통(반투명, 아래쪽이 밝게 모이는 굴절광), 주변 글로우, 착지 플래시
+                const defs = el('defs', {}, scene);
+                const grad = (id, stops, attrs) => {
+                    const g = el('radialGradient', Object.assign({ id }, attrs || {}), defs);
+                    stops.forEach(([o, c, a]) => el('stop', { offset: o, 'stop-color': c, 'stop-opacity': a }, g));
+                };
+                grad('dropBody', [[0, '#fffdf6', 0.75], [0.55, '#fbf3e1', 0.32], [1, '#ffffff', 0.08]], { cx: 0.5, cy: 0.7, r: 0.65 });
+                grad('dropGlow', [[0, '#fff8e8', 0.7], [0.45, '#fff3da', 0.22], [1, '#fff3da', 0]]);
+                grad('impactFlash', [[0, '#fffaf0', 0.95], [0.4, '#fff3da', 0.4], [1, '#fff3da', 0]]);
+
+                dropGroup = el('g', { opacity: 0 }, dropLayer);
+                dropGlow = el('circle', { cx: 0, cy: 60, r: 520, fill: 'url(#dropGlow)', stroke: 'none' }, dropGroup);
+                const inner = el('g', { fill: INK, stroke: INK, transform: 'translate(-512 -510)' }, dropGroup);
+                const outer = data.p.reduce((a, b) => (b.a > a.a ? b : a));
+                el('path', { d: outer.d.slice(0, outer.d.indexOf('Z') + 1), fill: 'url(#dropBody)', stroke: 'none' }, inner);
+                const ink = el('g', { opacity: 0.8 }, inner);
+                data.p.forEach(p => el('path', { d: p.d, 'fill-rule': 'evenodd', 'stroke-width': 0.6 }, ink));
+                // 반사광: 왼쪽 위 하이라이트 + 아래쪽에 모이는 굴절광
+                el('ellipse', { cx: 452, cy: 470, rx: 22, ry: 62, transform: 'rotate(22 452 470)', fill: '#ffffff', 'fill-opacity': 0.92, stroke: 'none' }, inner);
+                el('ellipse', { cx: 560, cy: 700, rx: 78, ry: 24, transform: 'rotate(-12 560 700)', fill: '#fffaf0', 'fill-opacity': 0.55, stroke: 'none' }, inner);
+                // 반짝임(네 갈래 별빛)
+                dropGlint = el('path', { d: 'M0 -90 C6 -12 12 -6 90 0 C12 6 6 12 0 90 C-6 12 -12 6 -90 0 C-12 -6 -6 -12 0 -90 Z', fill: '#ffffff', stroke: 'none' }, dropGroup);
+            }
+            let dropGlow = null, dropGlint = null;
+            const DROP_SCALE = 0.15; // 원본 1024px 이미지 → 화면에서 약 75 단위 높이
+            function placeDrop(x, y, s, stretch, opacity, t) {
+                if (!dropGroup) return;
+                dropGroup.setAttribute('opacity', opacity);
+                dropGroup.setAttribute('transform', `translate(${x} ${y}) scale(${s * DROP_SCALE} ${s * DROP_SCALE * stretch})`);
+                // 떨어지는 동안 하이라이트가 반짝이고 주변 빛이 은은하게 일렁임
+                const tw = Math.pow(Math.sin(t * 7.5), 2);
+                dropGlint.setAttribute('transform', `translate(-62 -48) rotate(${(t * 70) % 360}) scale(${(0.35 + 0.65 * tw).toFixed(3)})`);
+                dropGlint.setAttribute('opacity', (0.55 + 0.45 * tw).toFixed(3));
+                dropGlow.setAttribute('opacity', (0.75 + 0.25 * Math.sin(t * 4)).toFixed(3));
+            }
+
+            function ripple(start) {
+                const flash = el('ellipse', { cx: IMPACT[0], cy: IMPACT[1], rx: 0, ry: 0, fill: 'url(#impactFlash)', stroke: 'none' }, rippleLayer);
+                const rings = [0, 0.18, 0.4, 0.66].map(d => ({ d,
+                    shine: el('ellipse', { cx: IMPACT[0], cy: IMPACT[1] - 2, rx: 0, ry: 0, opacity: 0, stroke: '#fffaf0' }, rippleLayer),
+                    node: el('ellipse', { cx: IMPACT[0], cy: IMPACT[1], rx: 0, ry: 0, opacity: 0 }, rippleLayer) }));
+                const drops = Array.from({ length: 7 }, () => ({
+                    vx: (rand() - 0.5) * 260, vy: -180 - rand() * 160, r: 2 + rand() * 3,
+                    node: el('circle', { cx: IMPACT[0], cy: IMPACT[1], r: 0, fill: INK, stroke: 'none' }, rippleLayer)
+                }));
+                return t => {
+                    const u = t - start;
+                    const fp = clamp01(u / 0.75), fr = 40 + easeOut(fp) * 420;
+                    flash.setAttribute('rx', fr);
+                    flash.setAttribute('ry', fr * 0.32);
+                    flash.setAttribute('opacity', (Math.pow(1 - fp, 1.5)).toFixed(3));
+                    rings.forEach(r => {
+                        const p = clamp01((u - r.d) / 1.3);
+                        const e = easeOut(p);
+                        r.node.setAttribute('rx', 30 + e * 560);
+                        r.node.setAttribute('ry', (30 + e * 560) * 0.24);
+                        r.node.setAttribute('stroke-width', (2.6 * (1 - p) + 0.4).toFixed(2));
+                        r.node.setAttribute('opacity', p > 0 && p < 1 ? (0.75 * (1 - p)).toFixed(3) : 0);
+                        r.shine.setAttribute('rx', 30 + e * 560 - 4);
+                        r.shine.setAttribute('ry', (30 + e * 560) * 0.24 - 2);
+                        r.shine.setAttribute('stroke-width', (2.2 * (1 - p) + 0.3).toFixed(2));
+                        r.shine.setAttribute('opacity', p > 0 && p < 1 ? (0.9 * (1 - p)).toFixed(3) : 0);
+                    });
+                    drops.forEach(d => {
+                        const s = clamp01(u / 0.7), tt = s * 0.7;
+                        d.node.setAttribute('cx', IMPACT[0] + d.vx * tt);
+                        d.node.setAttribute('cy', IMPACT[1] + d.vy * tt + 0.5 * 900 * tt * tt);
+                        d.node.setAttribute('r', s > 0 && s < 1 ? d.r : 0);
+                    });
+                    return u > 2.1;
+                };
+            }
+
+            // ── 메인 타임라인
+            let t0 = null, rippleStep = null, settled = false, dropStart = [VB_W / 2, VB_H / 2];
+            let sceneItems = null;
+            function frame(now) {
+                if (skipped || finished) return;
+                if (t0 === null) t0 = now;
+                const t = (now - t0) / 1000;
+
+                // 확대: 화면 전체 → 시시포스의 이마
+                const z = easeInOut(seg(t, T.zoomStart, T.zoomEnd));
+                let s = Math.exp(lerp(0, Math.log(T.zoomScale), z));
+                const pose = poseAt(Math.min(t, T.dropFall));
+                const brow = pose.upper.at(PARTS.upper.brow);
+                let fx = lerp(VB_W / 2, brow[0] - 4, z), fy = lerp(VB_H / 2, brow[1] - 10, z);
+
+                // 낙하: 카메라가 땀방울을 따라 내려가며 장면은 위로 빠지고 양피지만 남음
+                const f = seg(t, T.dropFall, T.impact);
+                const fe = f * f;
+                if (f > 0) {
+                    fy += 1300 * fe;
+                    s = lerp(T.zoomScale, 2, easeInOut(f));
+                }
+                setCamera(s, fx, fy);
+                art.setAttribute('opacity', (1 - seg(t, T.dropFall + 0.5, T.impact - 0.1)).toFixed(3));
+
+                // 걷기: 다리가 번갈아 내딛고, 몸과 바위가 비탈을 오르며 바위는 굴러감
+                applyPose(pose);
+                // 다 그려진 뒤에는 조각별 애니메이션을 정지 상태로 확정 (프레임 부담 줄이기)
+                if (sceneItems && t > T.draw + 0.1) {
+                    sceneItems.forEach(i => {
+                        i.anim.cancel();
+                        i.node.style.strokeDasharray = '';
+                        i.node.style.strokeDashoffset = '';
+                        i.node.setAttribute('fill-opacity', 1);
+                    });
+                    sceneItems = null;
+                }
+
+                // 땀방울: 움직이는 이마에서 맺힌 뒤(화면 좌표로 투영), 화면 아래쪽 IMPACT 지점까지 떨어짐
+                const bx = VB_W / 2 + s * (brow[0] - fx), by = VB_H / 2 + s * (brow[1] - fy);
+                const form = easeOut(seg(t, T.dropForm, T.dropFall));
+                if (t < T.dropFall) {
+                    placeDrop(bx, by + 24 * form, 0.3 + 0.7 * form, 1, form, t);
+                    dropStart = [bx, by + 24];
+                } else if (t < T.impact) {
+                    placeDrop(lerp(dropStart[0], IMPACT[0], easeInOut(f)), lerp(dropStart[1], IMPACT[1] - 34, fe), 1, 1 + 0.35 * f, 1, t);
+                } else {
+                    const sq = seg(t, T.impact, T.impact + 0.12);
+                    placeDrop(IMPACT[0], IMPACT[1] - 34 + 30 * sq, 1, 1 - 0.8 * sq, 1 - sq, t);
+                    if (!rippleStep) rippleStep = ripple(T.impact);
+                }
+                if (rippleStep && rippleStep(t)) rippleLayer.textContent = '';
+
+                // 물결이 잦아들면 첫 화면을 정돈하고 초상화·문구를 그림
+                if (t >= T.settle && !settled) {
+                    settled = true;
+                    settle();
+                }
+                if (t < T.impact + 2.2) requestAnimationFrame(frame);
+                else cleanupIntro();
+            }
+
+            function settle() {
+                root.classList.remove('intro-playing');
+                animations.forEach(a => a.cancel());
+                art.textContent = '';
+                setCamera(1, VB_W / 2, VB_H / 2);
+                drawPortrait().then(writeHeadline).then(() => {
+                    root.classList.remove('intro-pending');
+                    finished = true;
+                });
+            }
+
+            function cleanupIntro() {
+                dropLayer.textContent = '';
+                rippleLayer.textContent = '';
+            }
+
+            // ── 초상화: 윤곽선 조각이 그려지고 잉크가 차오름
+            let portraitData = null;
+            function drawPortrait() {
+                row.classList.add('portrait-on');
+                if (!portraitData || !portraitSvg) return wait(600);
+                portraitSvg.textContent = '';
+                const g = el('g', {}, portraitSvg);
+                drawPieces(portraitData, g, 1.9, { strokeWidth: 1.2, sweepX: 0.25, sweepY: 0.75 });
+                return wait(1700);
+            }
+            const wait = ms => new Promise(r => setTimeout(r, ms));
+
+            // ── 문구: 실제 제목이 한 줄씩 왼쪽→오른쪽으로 잉크가 번지듯 한 번에 써짐
+            function writeHeadline() {
+                const h1 = row.querySelector('.headline');
+                if (!h1) return Promise.resolve();
+
+                // 글자 영역을 줄 단위로 묶기 (자동 줄바꿈이 있어도 화면에 보이는 줄 기준)
+                const box = h1.getBoundingClientRect();
+                const range = document.createRange();
+                range.selectNodeContents(h1);
+                const lines = [];
+                [...range.getClientRects()].filter(r => r.width > 1).forEach(r => {
+                    const line = lines.find(l => Math.abs((l.top + l.bottom) / 2 - (r.top + r.bottom) / 2) < r.height / 2);
+                    if (line) {
+                        line.left = Math.min(line.left, r.left); line.right = Math.max(line.right, r.right);
+                        line.top = Math.min(line.top, r.top); line.bottom = Math.max(line.bottom, r.bottom);
+                    } else lines.push({ left: r.left, right: r.right, top: r.top, bottom: r.bottom });
+                });
+                lines.sort((a, b) => a.top - b.top);
+                const total = lines.reduce((sum, l) => sum + (l.right - l.left), 0);
+                const EDGE = 28; // 번지는 가장자리 폭
+                const props = ['maskImage', 'maskSize', 'maskPosition', 'maskRepeat'];
+                const css = k => k.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
+                const setMask = revealed => {
+                    let acc = 0;
+                    const imgs = [], sizes = [], poss = [];
+                    lines.forEach(l => {
+                        const w = Math.max(0, Math.min(revealed - acc, l.right - l.left));
+                        acc += l.right - l.left;
+                        if (w <= 0) return;
+                        imgs.push(`linear-gradient(90deg, #000 calc(100% - ${EDGE}px), transparent)`);
+                        sizes.push(`${w + EDGE}px ${l.bottom - l.top + 8}px`);
+                        poss.push(`${l.left - box.left}px ${l.top - box.top - 4}px`);
+                    });
+                    const v = {
+                        maskImage: imgs.join(',') || 'linear-gradient(transparent, transparent)',
+                        maskSize: sizes.join(',') || 'auto', maskPosition: poss.join(',') || '0 0', maskRepeat: 'no-repeat'
+                    };
+                    props.forEach(k => { h1.style.setProperty(css(k), v[k]); h1.style.setProperty('-webkit-' + css(k), v[k]); });
+                };
+                if (!total) { row.classList.add('headline-on'); return wait(300); }
+
+                h1.style.transition = 'none';
+                setMask(0);
+                row.classList.add('headline-on');
+                const DUR = 2000;
+                const start = performance.now();
+                return new Promise(resolve => {
+                    (function step(now) {
+                        const p = clamp01((now - start) / DUR);
+                        setMask((total + EDGE) * (p < 1 ? p * (2 - p) * 0.15 + p * 0.85 : 1));
+                        if (p < 1) return requestAnimationFrame(step);
+                        props.forEach(k => { h1.style.removeProperty(css(k)); h1.style.removeProperty('-webkit-' + css(k)); });
+                        h1.style.removeProperty('transition');
+                        resolve();
+                    })(start);
+                });
+            }
+
+            // ── 건너뛰기: 바로 최종 화면으로
+            function skip() {
+                if (skipped || finished) return;
+                skipped = true;
+                animations.forEach(a => a.cancel());
+                art.textContent = ''; dropLayer.textContent = ''; rippleLayer.textContent = '';
+                setCamera(1, VB_W / 2, VB_H / 2);
+                if (portraitData && portraitSvg) {
+                    portraitSvg.textContent = '';
+                    el('image', { href: './intro/portrait.webp', width: 768, height: 1152 }, portraitSvg);
+                }
+                root.classList.remove('intro-playing', 'intro-pending');
+            }
+            if (skipBtn) skipBtn.addEventListener('click', skip);
+
+            // 그림 데이터를 모두 불러온 뒤 시작. 실패하면(예: 파일을 직접 연 경우) 인트로 없이 바로 표시
+            Promise.all([load('./intro/rig.json'), load('./intro/drop.json'), load('./intro/portrait.json')])
+                .then(([rig, drop, portrait]) => {
+                    if (skipped) return;
+                    portraitData = portrait;
+                    buildDrop(drop);
+                    setCamera(1, VB_W / 2, VB_H / 2);
+                    // 파츠별 그룹을 겹치는 순서대로 만들고, 첫 자세에 놓은 뒤 화면 기준 왼쪽→오른쪽으로 그려지게 함
+                    const pose0 = poseAt(0);
+                    const pieces = [];
+                    DRAW_ORDER.forEach(name => {
+                        rigGroups[name] = el('g', {}, art);
+                        const xf = pose0[name];
+                        rig[name].p.forEach(p => {
+                            const w = xf ? xf.at([p.x, p.y]) : [p.x, p.y];
+                            pieces.push(Object.assign({}, p, { parent: rigGroups[name], x: w[0], y: w[1] }));
+                        });
+                    });
+                    applyPose(pose0);
+                    sceneItems = drawPieces({ w: VB_W, h: VB_H, p: pieces }, art, T.draw);
+                    requestAnimationFrame(frame);
+                })
+                .catch(() => skip());
+        })();
     </script>
 
 </body></html>
