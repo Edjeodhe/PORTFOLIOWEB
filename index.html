@@ -1006,7 +1006,10 @@
                 var(--parchment-noise),
                 var(--parchment-blotch),
                 var(--parchment);
-            background-size: auto, 260px 260px, 900px 900px, auto;
+            /* 얼룩 무늬는 900px 타일을 반복하면 이음새가 세로줄처럼 보여서, 한 장을 화면 전체로 늘려 깝니다 */
+            background-size: auto, 260px 260px, cover, auto;
+            background-repeat: repeat, repeat, no-repeat, repeat;
+            background-position: center;
         }
 
         .hero-scene {
