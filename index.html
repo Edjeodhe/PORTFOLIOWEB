@@ -1079,6 +1079,16 @@
         }
         .hero-portrait-svg { display: block; width: 100%; height: auto; overflow: visible; }
 
+        /* 문구 펜 드로잉용 임시 SVG (다 쓰면 제거되고 실제 제목이 보임) */
+        .headline-draw {
+            position: absolute;
+            left: 0;
+            top: 0;
+            overflow: visible;
+            pointer-events: none;
+            z-index: 4;
+        }
+
         /* 인트로가 끝나기 전까지 첫 화면 요소를 숨겨 두었다가 순서대로 등장 */
         html.intro-pending .hero-intro-row:not(.portrait-on) .hero-portrait { opacity: 0; }
         html.intro-pending .hero-intro-row:not(.headline-on) .headline { opacity: 0; }
@@ -2368,61 +2378,74 @@
             }
             const wait = ms => new Promise(r => setTimeout(r, ms));
 
-            // ── 문구: 실제 제목이 한 줄씩 왼쪽→오른쪽으로 잉크가 번지듯 한 번에 써짐
+            // ── 문구: 펜으로 쓰듯 글자마다 왼쪽→오른쪽으로 윤곽선이 그려진 뒤 잉크가 차오름
+            // 글자 하나하나를 실제 제목 글자와 정확히 같은 자리에 그리고, 다 쓰면 같은 프레임에 실제 제목으로 바꿔치기
+            // (자리가 어긋나거나 서로 흐려지며 바뀌면 문구가 두 번 그려지는 것처럼 보이므로)
             function writeHeadline() {
                 const h1 = row.querySelector('.headline');
                 if (!h1) return Promise.resolve();
+                const cs = getComputedStyle(h1);
+                const fontSpec = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+                const fontsReady = document.fonts && document.fonts.load ? document.fonts.load(fontSpec, h1.textContent).catch(() => {}) : Promise.resolve();
 
-                // 글자 영역을 줄 단위로 묶기 (자동 줄바꿈이 있어도 화면에 보이는 줄 기준)
-                const box = h1.getBoundingClientRect();
-                const range = document.createRange();
-                range.selectNodeContents(h1);
-                const lines = [];
-                [...range.getClientRects()].filter(r => r.width > 1).forEach(r => {
-                    const line = lines.find(l => Math.abs((l.top + l.bottom) / 2 - (r.top + r.bottom) / 2) < r.height / 2);
-                    if (line) {
-                        line.left = Math.min(line.left, r.left); line.right = Math.max(line.right, r.right);
-                        line.top = Math.min(line.top, r.top); line.bottom = Math.max(line.bottom, r.bottom);
-                    } else lines.push({ left: r.left, right: r.right, top: r.top, bottom: r.bottom });
-                });
-                lines.sort((a, b) => a.top - b.top);
-                const total = lines.reduce((sum, l) => sum + (l.right - l.left), 0);
-                const EDGE = 28; // 번지는 가장자리 폭
-                const props = ['maskImage', 'maskSize', 'maskPosition', 'maskRepeat'];
-                const css = k => k.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
-                const setMask = revealed => {
-                    let acc = 0;
-                    const imgs = [], sizes = [], poss = [];
-                    lines.forEach(l => {
-                        const w = Math.max(0, Math.min(revealed - acc, l.right - l.left));
-                        acc += l.right - l.left;
-                        if (w <= 0) return;
-                        imgs.push(`linear-gradient(90deg, #000 calc(100% - ${EDGE}px), transparent)`);
-                        sizes.push(`${w + EDGE}px ${l.bottom - l.top + 8}px`);
-                        poss.push(`${l.left - box.left}px ${l.top - box.top - 4}px`);
+                return fontsReady.then(() => {
+                    if (skipped) return;
+                    // 글자마다 화면 위치와 색을 모음 (자동 줄바꿈이 있어도 실제로 보이는 자리 기준)
+                    const glyphs = [];
+                    (function walk(node) {
+                        node.childNodes.forEach(c => {
+                            if (c.nodeType === 1) return walk(c);
+                            if (c.nodeType !== 3) return;
+                            const color = getComputedStyle(c.parentElement).color;
+                            for (let i = 0; i < c.length; i++) {
+                                const ch = c.textContent[i];
+                                if (!ch.trim()) continue;
+                                const r = document.createRange();
+                                r.setStart(c, i); r.setEnd(c, i + 1);
+                                const rect = r.getClientRects()[0];
+                                if (rect && rect.width > 0) glyphs.push({ ch, color, rect });
+                            }
+                        });
+                    })(h1);
+                    if (!glyphs.length) { row.classList.add('headline-on'); return wait(300); }
+
+                    const ctx = document.createElement('canvas').getContext('2d');
+                    ctx.font = fontSpec;
+                    const m = ctx.measureText('가');
+                    const size = parseFloat(cs.fontSize);
+                    const asc = m.fontBoundingBoxAscent || size * 0.88;
+                    const desc = m.fontBoundingBoxDescent || size * 0.22;
+
+                    // 페이지 좌표로 그려서 쓰는 도중에 스크롤해도 제목과 함께 움직이게 함
+                    const svg = el('svg', { class: 'headline-draw', width: document.documentElement.scrollWidth, height: document.documentElement.scrollHeight }, document.body);
+                    const DASH = size * 9;
+                    const PER = 0.62, TOTAL = 2.6;
+                    const step = glyphs.length > 1 ? (TOTAL - PER) / (glyphs.length - 1) : 0;
+                    glyphs.forEach((g, i) => {
+                        const t = el('text', {
+                            x: g.rect.left + scrollX,
+                            y: g.rect.top + scrollY + (g.rect.height - asc - desc) / 2 + asc,
+                            'font-family': cs.fontFamily, 'font-size': cs.fontSize, 'font-weight': cs.fontWeight,
+                            fill: g.color, stroke: g.color, 'stroke-width': Math.max(0.8, size / 48), 'fill-opacity': 0,
+                            'stroke-linecap': 'round', 'stroke-linejoin': 'round'
+                        }, svg);
+                        t.textContent = g.ch;
+                        t.style.strokeDasharray = DASH;
+                        t.style.strokeDashoffset = DASH;
+                        // 잉크가 차오르면서 펜 윤곽은 사라져, 마지막 모습이 실제 제목과 똑같은 굵기가 되게 함
+                        animations.push(t.animate([
+                            { strokeDashoffset: DASH, fillOpacity: 0, strokeOpacity: 1 },
+                            { strokeDashoffset: 0, fillOpacity: 0, strokeOpacity: 1, offset: 0.62 },
+                            { strokeDashoffset: 0, fillOpacity: 1, strokeOpacity: 0 }
+                        ], { duration: PER * 1000, delay: i * step * 1000, fill: 'forwards', easing: 'ease-in-out' }));
                     });
-                    const v = {
-                        maskImage: imgs.join(',') || 'linear-gradient(transparent, transparent)',
-                        maskSize: sizes.join(',') || 'auto', maskPosition: poss.join(',') || '0 0', maskRepeat: 'no-repeat'
-                    };
-                    props.forEach(k => { h1.style.setProperty(css(k), v[k]); h1.style.setProperty('-webkit-' + css(k), v[k]); });
-                };
-                if (!total) { row.classList.add('headline-on'); return wait(300); }
-
-                h1.style.transition = 'none';
-                setMask(0);
-                row.classList.add('headline-on');
-                const DUR = 2000;
-                const start = performance.now();
-                return new Promise(resolve => {
-                    (function step(now) {
-                        const p = clamp01((now - start) / DUR);
-                        setMask((total + EDGE) * (p < 1 ? p * (2 - p) * 0.15 + p * 0.85 : 1));
-                        if (p < 1) return requestAnimationFrame(step);
-                        props.forEach(k => { h1.style.removeProperty(css(k)); h1.style.removeProperty('-webkit-' + css(k)); });
+                    return wait(TOTAL * 1000 + 60).then(() => {
+                        h1.style.transition = 'none';
+                        row.classList.add('headline-on');
+                        void h1.offsetWidth;
+                        svg.remove();
                         h1.style.removeProperty('transition');
-                        resolve();
-                    })(start);
+                    });
                 });
             }
 
@@ -2432,6 +2455,7 @@
                 skipped = true;
                 animations.forEach(a => a.cancel());
                 art.textContent = ''; dropLayer.textContent = ''; rippleLayer.textContent = '';
+                document.querySelectorAll('.headline-draw').forEach(n => n.remove());
                 setCamera(1, VB_W / 2, VB_H / 2);
                 if (portraitData && portraitSvg) {
                     portraitSvg.textContent = '';
