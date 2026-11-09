@@ -2377,7 +2377,12 @@
                 portraitSvg.textContent = '';
                 const g = el('g', {}, portraitSvg);
                 drawPieces(portraitData, g, 1.9, { strokeWidth: 1.2, sweepX: 0.25, sweepY: 0.75 });
-                return wait(1700);
+                return wait(1700).then(() => {
+                    if (skipped) return;
+                    // 그리기용 윤곽선에는 코 같은 가는 선이 빠져 있으므로, 다 그린 뒤 원본 그림으로 부드럽게 교체
+                    const img = el('image', { href: './intro/portrait.webp', width: 768, height: 1152 }, portraitSvg);
+                    img.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350, fill: 'both' }).finished.then(() => g.remove()).catch(() => {});
+                });
             }
             const wait = ms => new Promise(r => setTimeout(r, ms));
 
