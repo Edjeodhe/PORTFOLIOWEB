@@ -1104,7 +1104,7 @@
         html.intro-pending #info .eyebrow,
         html.intro-pending #info .sub-text,
         html.intro-pending #info > div:not(.hero-intro-row) { opacity: 0; transform: translateY(14px); }
-        .parchment-hero #info > div:not(.hero-intro-row) { display: none; }
+        .parchment-hero #info > div:not(.hero-intro-row):not(.hero-showcase) { display: none; }
         #info .eyebrow, #info .sub-text, #info > div:not(.hero-intro-row) {
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
@@ -1114,6 +1114,234 @@
             .hero-intro-row { flex-direction: column; align-items: flex-start; gap: 24px; }
             .hero-portrait { width: 150px; }
             .intro-skip { right: 16px; bottom: 16px; }
+        }
+
+        /* ==========================================================================
+           첫 화면 프로젝트 쇼케이스: 초상화·문구를 위로 올리고, 남는 아래 공간에
+           프로젝트 3개를 영상/이미지 배너로 넘겨 보기 (화살표·스와이프·자동 넘김)
+           ========================================================================== */
+        .parchment-hero #info {
+            width: 100%;
+            min-height: 100vh;
+            justify-content: flex-start;
+            padding-top: clamp(84px, 11vh, 112px);
+            padding-bottom: clamp(24px, 4vh, 44px);
+            gap: clamp(20px, 3.4vh, 36px);
+        }
+        .parchment-hero #info .hero-portrait { width: clamp(130px, 12vw, 190px); }
+        .parchment-hero #info .headline { font-size: clamp(30px, 3.8vw, 52px); margin-bottom: 14px; }
+        .parchment-hero #info .sub-text { margin-bottom: 0; }
+
+        .hero-showcase {
+            position: relative;
+            flex: 1 1 auto;
+            min-height: 260px;
+            max-height: 470px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #1a1410;
+            border: 1px solid rgba(43, 29, 18, 0.45);
+            box-shadow: 0 18px 44px rgba(60, 35, 12, 0.28), 0 2px 6px rgba(60, 35, 12, 0.18);
+            color: #efe4cf;
+            outline: none;
+            touch-action: pan-y;
+        }
+        .hero-showcase:focus-visible { box-shadow: 0 0 0 3px rgba(180, 71, 15, 0.6), 0 18px 44px rgba(60, 35, 12, 0.28); }
+
+        .showcase-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.7s ease, visibility 0s linear 0.7s;
+        }
+        .showcase-slide.is-active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.7s ease, visibility 0s;
+        }
+
+        .showcase-media { position: absolute; inset: 0; overflow: hidden; }
+        .showcase-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        /* 정사각형 대표 이미지만 있는 프로젝트: 흐린 확대본을 배경에 깔고, 오른쪽에 원본을 천천히 움직임 */
+        .showcase-media--art::before {
+            content: '';
+            position: absolute;
+            inset: -60px;
+            background: var(--art) center / cover no-repeat;
+            filter: blur(34px) saturate(1.15) brightness(0.5);
+        }
+        .showcase-art {
+            position: absolute;
+            right: 11%;
+            top: 50%;
+            height: 76%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 18px;
+            border: 1px solid rgba(239, 228, 207, 0.25);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+            transform: translateY(-50%);
+        }
+        .showcase-slide.is-active .showcase-art { animation: showcaseDrift 9s ease-in-out both; }
+        @keyframes showcaseDrift {
+            from { transform: translateY(-50%) scale(0.96) rotate(-1.2deg); }
+            to { transform: translateY(-53%) scale(1.03) rotate(0.8deg); }
+        }
+
+        .showcase-shade {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(20, 15, 11, 0.9) 0%, rgba(20, 15, 11, 0.66) 36%, rgba(20, 15, 11, 0.1) 68%, rgba(20, 15, 11, 0) 100%),
+                linear-gradient(0deg, rgba(20, 15, 11, 0.55) 0%, rgba(20, 15, 11, 0) 30%);
+            pointer-events: none;
+        }
+
+        /* 첫 화면에서는 오른쪽 목차가 쇼케이스 모서리를 가리므로 숨김 (위쪽 메뉴로 이동 가능) */
+        html.showcase-in-view .side-toc { opacity: 0; pointer-events: none; }
+
+        .showcase-text {
+            position: absolute;
+            left: clamp(76px, 6vw, 92px);
+            top: 50%;
+            transform: translateY(-50%);
+            width: min(46%, 520px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .showcase-slide .showcase-text > * {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .showcase-slide.is-active .showcase-text > * { opacity: 1; transform: none; }
+        .showcase-slide.is-active .showcase-text > :nth-child(2) { transition-delay: 0.08s; }
+        .showcase-slide.is-active .showcase-text > :nth-child(3) { transition-delay: 0.14s; }
+        .showcase-slide.is-active .showcase-text > :nth-child(4) { transition-delay: 0.2s; }
+        .showcase-slide.is-active .showcase-text > :nth-child(5) { transition-delay: 0.26s; }
+        .showcase-slide.is-active .showcase-text > :nth-child(6) { transition-delay: 0.32s; }
+
+        .showcase-eyebrow {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #e8925a;
+            margin-bottom: 8px;
+        }
+        .showcase-title {
+            font-family: 'Nanum Myeongjo', Georgia, serif;
+            font-size: clamp(26px, 2.8vw, 40px);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+            color: #f6eddc;
+            margin-bottom: 8px;
+        }
+        .showcase-meta { font-size: 13px; color: rgba(239, 228, 207, 0.72); margin-bottom: 16px; }
+        .showcase-role {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #f6eddc;
+            padding: 5px 12px;
+            border-radius: var(--radius-pill);
+            background: rgba(217, 119, 58, 0.22);
+            border: 1px solid rgba(232, 146, 90, 0.45);
+            margin-bottom: 12px;
+        }
+        .showcase-tasks { font-size: 13px; line-height: 1.75; color: rgba(239, 228, 207, 0.86); margin-bottom: 18px; }
+        .showcase-text p { margin: 0; }
+        .showcase-text .showcase-meta { margin-bottom: 14px; }
+        .showcase-more {
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            color: #f6eddc;
+            background: #b4470f;
+            border: none;
+            border-radius: var(--radius-button);
+            padding: 9px 18px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .showcase-more:hover { background: #c9581c; }
+
+        .showcase-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid rgba(239, 228, 207, 0.35);
+            background: rgba(20, 15, 11, 0.45);
+            color: #f6eddc;
+            font-size: 26px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+        .showcase-arrow:hover { background: rgba(180, 71, 15, 0.85); border-color: rgba(239, 228, 207, 0.6); }
+        .showcase-arrow:active { transform: translateY(-50%) scale(0.94); }
+        .showcase-arrow.prev { left: 14px; }
+        .showcase-arrow.next { right: 14px; }
+
+        .showcase-nav {
+            position: absolute;
+            right: clamp(20px, 3vw, 36px);
+            bottom: 18px;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .showcase-count { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: rgba(239, 228, 207, 0.85); }
+        .showcase-dots { display: flex; gap: 6px; }
+        .showcase-dot {
+            position: relative;
+            width: 34px;
+            height: 4px;
+            padding: 0;
+            border: none;
+            border-radius: 2px;
+            background: rgba(239, 228, 207, 0.28);
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .showcase-dot::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #e8925a;
+            transform: scaleX(var(--p, 0));
+            transform-origin: left;
+        }
+
+        @media (max-height: 760px) and (min-width: 701px) {
+            .showcase-tasks { display: none; }
+            .showcase-role { margin-bottom: 16px; }
+        }
+        @media (max-width: 700px) {
+            .parchment-hero #info { min-height: auto; }
+            .hero-showcase { flex: 0 0 auto; height: 440px; max-height: none; }
+            .showcase-shade { background: linear-gradient(0deg, rgba(20, 15, 11, 0.94) 0%, rgba(20, 15, 11, 0.7) 50%, rgba(20, 15, 11, 0.15) 100%); }
+            .showcase-text { left: 20px; right: 20px; top: auto; bottom: 52px; transform: none; width: auto; }
+            .showcase-art { right: 50%; top: 22px; height: 42%; transform: translateX(50%); }
+            .showcase-slide.is-active .showcase-art { animation: none; }
+            .showcase-tasks { display: none; }
+            .showcase-arrow { top: 26%; width: 40px; height: 40px; }
+            .showcase-nav { left: 20px; right: auto; bottom: 18px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .showcase-slide.is-active .showcase-art { animation: none; }
         }
     </style>
 </head>
@@ -1172,6 +1400,63 @@
             <div class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit65" contenteditable="false">01. OVERVIEW</div>
             <h1 class="headline editable-md" data-edit-id="edit0" contenteditable="false"><span style="color: var(--color-signal-orange);">포기하지 않고 끝까지 도전</span>하는<br>기획자 김민성입니다</h1>
             <p class="sub-text editable-md" data-edit-id="edit1" contenteditable="false">저는 반복되는 기획과 분석 과정에서 실패를 딛고 성장하는 사람입니다</p>
+                </div>
+            </div>
+
+            <!-- 프로젝트 쇼케이스: 화살표(오른쪽 › / 왼쪽 ‹), 아래 막대, 스와이프, 키보드 ←→ 로 넘김. 9초마다 자동으로 다음 장 -->
+            <div class="hero-showcase" id="heroShowcase" tabindex="0" role="region" aria-roledescription="carousel" aria-label="진행한 프로젝트 하이라이트">
+                <article class="showcase-slide is-active" aria-roledescription="slide" aria-label="1 / 3">
+                    <div class="showcase-media">
+                        <video class="showcase-video" src="./showcase/last_sanctuary.mp4" poster="./showcase/last_sanctuary.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+                    </div>
+                    <div class="showcase-shade"></div>
+                    <div class="showcase-text">
+                        <span class="showcase-eyebrow editable-md" data-edit-id="edit184" contenteditable="false">Featured Project 01</span>
+                        <h3 class="showcase-title editable-md" data-edit-id="edit185" contenteditable="false">Last Sanctuary</h3>
+                        <p class="showcase-meta editable-md" data-edit-id="edit186" contenteditable="false">시뮬레이션 디펜스 게임 | 5인 팀 | 진행기간: 5주</p>
+                        <span class="showcase-role editable-md" data-edit-id="edit187" contenteditable="false">담당 역할: 부팀장(PM)</span>
+                        <div class="showcase-tasks editable-md" data-edit-id="edit188" contenteditable="false">- 전체 프로젝트 일정 관리 및 소규모 볼륨 컨트롤<br>- 시스템 기획서 작성 및 핵심 매커니즘 명세화<br>- Claude AI를 활용한 서브 개발 구현 및 itch.io 출시</div>
+                        <button type="button" class="showcase-more" onclick="openProjectModal('project1Modal')">자세히 보기 →</button>
+                    </div>
+                </article>
+                <article class="showcase-slide" aria-roledescription="slide" aria-label="2 / 3">
+                    <div class="showcase-media showcase-media--art" style="--art: url('./project_naeil.png');">
+                        <img class="showcase-art" src="./project_naeil.png" alt="내일할래 대표 이미지" loading="lazy">
+                    </div>
+                    <div class="showcase-shade"></div>
+                    <div class="showcase-text">
+                        <span class="showcase-eyebrow editable-md" data-edit-id="edit189" contenteditable="false">Featured Project 02</span>
+                        <h3 class="showcase-title editable-md" data-edit-id="edit190" contenteditable="false">내일할래</h3>
+                        <p class="showcase-meta editable-md" data-edit-id="edit191" contenteditable="false">방치형 클리커 게임 | 2인 팀 | 진행기간: 2주</p>
+                        <span class="showcase-role editable-md" data-edit-id="edit192" contenteditable="false">담당 역할: 메인 개발 및 리소스 제작</span>
+                        <div class="showcase-tasks editable-md" data-edit-id="edit193" contenteditable="false">- 인게임 아트 리소스 및 UI/UX 인터페이스 설계<br>- 방치형 성장에 따른 루프 및 메인 개발 로직 구현<br>- 단기 프로젝트 내 시각적·기능적 완성도 도출</div>
+                        <button type="button" class="showcase-more" onclick="openProjectModal('project2Modal')">자세히 보기 →</button>
+                    </div>
+                </article>
+                <article class="showcase-slide" aria-roledescription="slide" aria-label="3 / 3">
+                    <div class="showcase-media showcase-media--art" style="--art: url('./project_moremustmush.png');">
+                        <img class="showcase-art" src="./project_moremustmush.png" alt="More Must Mush 대표 이미지" loading="lazy">
+                    </div>
+                    <div class="showcase-shade"></div>
+                    <div class="showcase-text">
+                        <span class="showcase-eyebrow editable-md" data-edit-id="edit194" contenteditable="false">Featured Project 03</span>
+                        <h3 class="showcase-title editable-md" data-edit-id="edit195" contenteditable="false">More Must Mush</h3>
+                        <p class="showcase-meta editable-md" data-edit-id="edit196" contenteditable="false">방치형 벽돌깨기 게임 | 팀 프로젝트 | 진행기간: 2026.09 ~ 진행 중</p>
+                        <span class="showcase-role editable-md" data-edit-id="edit197" contenteditable="false">담당 역할: 기획, 개발 및 출시 운영</span>
+                        <div class="showcase-tasks editable-md" data-edit-id="edit198" contenteditable="false">- HTML 프로토타입 제작 및 Unity 이식<br>- 아트 리소스 적용, 캐릭터 리깅, 다국어 현지화<br>- itch.io 출시 · 데브로그 운영 및 모바일 UI 개편</div>
+                        <button type="button" class="showcase-more" onclick="openProjectModal('project3Modal')">자세히 보기 →</button>
+                    </div>
+                </article>
+
+                <button type="button" class="showcase-arrow prev" aria-label="이전 프로젝트">‹</button>
+                <button type="button" class="showcase-arrow next" aria-label="다음 프로젝트">›</button>
+                <div class="showcase-nav">
+                    <span class="showcase-count" aria-live="polite">01 / 03</span>
+                    <div class="showcase-dots">
+                        <button type="button" class="showcase-dot" aria-label="1번 프로젝트 보기"></button>
+                        <button type="button" class="showcase-dot" aria-label="2번 프로젝트 보기"></button>
+                        <button type="button" class="showcase-dot" aria-label="3번 프로젝트 보기"></button>
+                    </div>
                 </div>
             </div>
 
@@ -2604,6 +2889,124 @@
                     requestAnimationFrame(frame);
                 })
                 .catch(() => skip());
+        })();
+    </script>
+
+    <script>
+        // 첫 화면 프로젝트 쇼케이스: 화살표·막대·스와이프·키보드로 넘기고, 보고 있지 않을 때는 자동 넘김을 멈춤
+        (function () {
+            const box = document.getElementById('heroShowcase');
+            if (!box) return;
+            const slides = [...box.querySelectorAll('.showcase-slide')];
+            const dots = [...box.querySelectorAll('.showcase-dot')];
+            const count = box.querySelector('.showcase-count');
+            const lockBtn = document.getElementById('lockToggleBtn');
+            const reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const IMAGE_MS = 9000;
+            const pad = n => String(n).padStart(2, '0');
+
+            let index = 0, elapsed = 0, last = performance.now();
+            let hovered = false, focused = false, onScreen = true;
+
+            // 영상 장면은 영상 한 바퀴를 다 보여 준 뒤 넘김
+            const durationOf = s => {
+                const v = s.querySelector('video');
+                return v && v.duration ? v.duration * 1000 : IMAGE_MS;
+            };
+            const editing = () => lockBtn && lockBtn.classList.contains('unlocked');
+            const modalOpen = () => !!document.querySelector('.project-modal-overlay.open');
+            const introOn = () => document.documentElement.classList.contains('intro-pending');
+            const paused = () => reduced || hovered || focused || !onScreen || document.hidden || editing() || modalOpen() || introOn();
+
+            function syncVideos() {
+                slides.forEach((s, i) => {
+                    const v = s.querySelector('video');
+                    if (!v) return;
+                    if (i === index && onScreen && !document.hidden && !introOn() && !reduced) {
+                        const p = v.play();
+                        if (p && p.catch) p.catch(() => {});
+                    } else {
+                        v.pause();
+                    }
+                });
+            }
+
+            function show(i) {
+                index = (i + slides.length) % slides.length;
+                elapsed = 0;
+                slides.forEach((s, k) => {
+                    const on = k === index;
+                    s.classList.toggle('is-active', on);
+                    s.setAttribute('aria-hidden', on ? 'false' : 'true');
+                    const v = s.querySelector('video');
+                    if (v && on) { try { v.currentTime = 0; } catch (e) {} }
+                    // 이미지 장면은 들어올 때마다 움직임을 처음부터 다시 시작
+                    const art = s.querySelector('.showcase-art');
+                    if (art && on) { art.style.animation = 'none'; void art.offsetWidth; art.style.animation = ''; }
+                });
+                dots.forEach((d, k) => {
+                    d.style.setProperty('--p', k < index ? 1 : 0);
+                    d.setAttribute('aria-current', k === index ? 'true' : 'false');
+                });
+                if (count) count.textContent = `${pad(index + 1)} / ${pad(slides.length)}`;
+                syncVideos();
+            }
+
+            function tick(now) {
+                const dt = now - last;
+                last = now;
+                if (!paused()) {
+                    elapsed += dt;
+                    const total = durationOf(slides[index]);
+                    if (elapsed >= total) show(index + 1);
+                    else if (dots[index]) dots[index].style.setProperty('--p', (elapsed / total).toFixed(4));
+                }
+                requestAnimationFrame(tick);
+            }
+
+            box.querySelector('.showcase-arrow.next').addEventListener('click', () => show(index + 1));
+            box.querySelector('.showcase-arrow.prev').addEventListener('click', () => show(index - 1));
+            dots.forEach((d, k) => d.addEventListener('click', () => show(k)));
+
+            box.addEventListener('keydown', e => {
+                if (e.target.isContentEditable) return;
+                if (e.key === 'ArrowRight') { e.preventDefault(); show(index + 1); }
+                else if (e.key === 'ArrowLeft') { e.preventDefault(); show(index - 1); }
+            });
+
+            box.addEventListener('mouseenter', () => { hovered = true; });
+            box.addEventListener('mouseleave', () => { hovered = false; });
+            // 키보드(Tab)로 들어왔을 때만 멈춤. 마우스로 화살표를 누른 뒤에는 자동 넘김이 계속됨
+            box.addEventListener('focusin', e => { focused = e.target.matches(':focus-visible'); });
+            box.addEventListener('focusout', () => { focused = false; });
+
+            // 터치 스와이프 (왼쪽으로 밀면 다음, 오른쪽으로 밀면 이전)
+            let startX = null, startY = 0;
+            box.addEventListener('pointerdown', e => {
+                if (e.pointerType === 'mouse') return;
+                startX = e.clientX; startY = e.clientY;
+            });
+            box.addEventListener('pointerup', e => {
+                if (startX === null) return;
+                const dx = e.clientX - startX, dy = e.clientY - startY;
+                startX = null;
+                if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) show(index + (dx < 0 ? 1 : -1));
+            });
+            box.addEventListener('pointercancel', () => { startX = null; });
+
+            if ('IntersectionObserver' in window) {
+                new IntersectionObserver(entries => {
+                    onScreen = entries[0].isIntersecting;
+                    document.documentElement.classList.toggle('showcase-in-view', onScreen);
+                    syncVideos();
+                }, { threshold: 0.35 }).observe(box);
+            }
+            document.addEventListener('visibilitychange', syncVideos);
+            // 인트로가 끝나 쇼케이스가 나타나는 순간 영상 재생
+            new MutationObserver(syncVideos).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+            show(0);
+            requestAnimationFrame(tick);
         })();
     </script>
 
