@@ -2268,6 +2268,13 @@
 
             // 'no-cache': 브라우저에 저장된 사본이 있어도 서버에 바뀌었는지 확인 (GitHub Pages는 10분 캐시라 수정본이 늦게 보이는 것 방지)
             const load = url => fetch(url, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(url); return r.json(); });
+            // 원본 초상화도 같은 방식으로 확인해서 받아옴. 그리기 데이터만 새것이고 그림은 옛 사본이면, 새 얼굴로 그리다가 옛 얼굴로 바뀜
+            const PORTRAIT_URL = './intro/portrait.webp';
+            let portraitSrc = PORTRAIT_URL;
+            const loadPortraitImage = () => fetch(PORTRAIT_URL, { cache: 'no-cache' })
+                .then(r => { if (!r.ok) throw new Error(PORTRAIT_URL); return r.blob(); })
+                .then(b => { portraitSrc = URL.createObjectURL(b); })
+                .catch(() => {});
 
             function setCamera(s, fx, fy) {
                 camera.setAttribute('transform', `translate(${VB_W / 2} ${VB_H / 2}) scale(${s}) translate(${-fx} ${-fy})`);
@@ -2439,7 +2446,7 @@
                 return wait(1700).then(() => {
                     if (skipped) return;
                     // 그리기용 윤곽선에는 코 같은 가는 선이 빠져 있으므로, 다 그린 뒤 원본 그림으로 부드럽게 교체
-                    const img = el('image', { href: './intro/portrait.webp', width: 768, height: 1152 }, portraitSvg);
+                    const img = el('image', { href: portraitSrc, width: 768, height: 1152 }, portraitSvg);
                     img.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350, fill: 'both' }).finished.then(() => g.remove()).catch(() => {});
                 });
             }
@@ -2557,14 +2564,14 @@
                 setCamera(1, VB_W / 2, VB_H / 2);
                 if (portraitData && portraitSvg) {
                     portraitSvg.textContent = '';
-                    el('image', { href: './intro/portrait.webp', width: 768, height: 1152 }, portraitSvg);
+                    el('image', { href: portraitSrc, width: 768, height: 1152 }, portraitSvg);
                 }
                 root.classList.remove('intro-playing', 'intro-pending');
             }
             if (skipBtn) skipBtn.addEventListener('click', skip);
 
             // 그림 데이터를 모두 불러온 뒤 시작. 실패하면(예: 파일을 직접 연 경우) 인트로 없이 바로 표시
-            Promise.all([load('./intro/rig.json'), load('./intro/drop.json'), load('./intro/portrait.json')])
+            Promise.all([load('./intro/rig.json'), load('./intro/drop.json'), load('./intro/portrait.json'), loadPortraitImage()])
                 .then(([rig, drop, portrait]) => {
                     if (skipped) return;
                     portraitData = portrait;
