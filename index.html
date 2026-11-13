@@ -43,18 +43,19 @@
 
     <style>
         /* ==========================================================================
-           Design Tokens (Apple Style Dark/Light + Studio Few Typography)
+           Design Tokens: 첫 화면 양피지와 이어지는 "종이와 잉크" 팔레트
+           (변수 이름은 예전 그대로 두고 값만 따뜻한 색으로 바꿈)
            ========================================================================== */
         :root {
-            --color-pure-black: #000000;
-            --color-obsidian: #1d1d1f;
-            --color-carbon: #111111;
-            --color-frost-white: #f5f5f7;
-            --color-paper-white: #ffffff;
-            --color-platinum: #86868b;
-            --color-apple-blue: #0071e3;
-            --color-signal-orange: #f56900;
-            --color-graphite: #333336;
+            --color-pure-black: #1a1410;   /* 어두운 섹션 바탕: 짙은 잉크 */
+            --color-obsidian: #2a2119;     /* 어두운 카드 / 밝은 섹션의 글자 */
+            --color-carbon: #14100c;       /* Contact 바탕 */
+            --color-frost-white: #efe4cf;  /* 어두운 바탕 위 글자 */
+            --color-paper-white: #f4ecdc;  /* 밝은 섹션 바탕: 밝은 양피지 */
+            --color-platinum: #9a8a74;
+            --color-apple-blue: #d9773a;   /* 강조색 (어두운 바탕용) */
+            --color-signal-orange: #e8925a;
+            --color-graphite: #4a3b2c;
             
             --font-family-system: 'Pretendard', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             
@@ -95,7 +96,7 @@
             outline: 2px dashed var(--color-apple-blue);
             outline-offset: 4px;
             border-radius: 4px;
-            background: rgba(0, 113, 227, 0.08);
+            background: rgba(217, 119, 58, 0.08);
             cursor: text;
         }
 
@@ -119,12 +120,12 @@
             font-size: 15px;
             letter-spacing: -0.5px;
             color: var(--color-frost-white);
-            background: rgba(29, 29, 31, 0.75);
+            background: rgba(42, 33, 25, 0.75);
             -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             padding: 10px 20px;
             border-radius: var(--radius-pill);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(239, 228, 207, 0.1);
         }
 
         .nav-container {
@@ -132,12 +133,12 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            background: rgba(29, 29, 31, 0.8);
+            background: rgba(42, 33, 25, 0.8);
             -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             padding: 6px 8px;
             border-radius: var(--radius-pill);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(239, 228, 207, 0.12);
         }
 
         .nav-btn {
@@ -151,12 +152,12 @@
 
         .nav-btn:hover, .nav-btn.active {
             color: var(--color-paper-white);
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(239, 228, 207, 0.15);
         }
 
         .lock-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(239, 228, 207, 0.1);
+            border: 1px solid rgba(239, 228, 207, 0.2);
             color: var(--color-frost-white);
             cursor: pointer;
             display: flex;
@@ -180,12 +181,12 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background: rgba(29, 29, 31, 0.6);
+            background: rgba(42, 33, 25, 0.6);
             -webkit-backdrop-filter: blur(16px);
             backdrop-filter: blur(16px);
             padding: 16px 12px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(239, 228, 207, 0.08);
         }
 
         .toc-item {
@@ -212,7 +213,7 @@
 
         .toc-item:hover, .toc-item.active {
             color: var(--color-paper-white);
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(239, 228, 207, 0.1);
         }
 
         .toc-item.active::before {
@@ -251,7 +252,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(26, 16, 8, 0.65);
             z-index: 2;
         }
 
@@ -279,10 +280,11 @@
         }
 
         .headline {
+            font-family: 'Nanum Myeongjo', Georgia, serif;
             font-size: clamp(32px, 4.5vw, 56px);
-            font-weight: 700;
+            font-weight: 800;
             line-height: 1.15;
-            letter-spacing: -1.5px;
+            letter-spacing: -1px;
             margin-bottom: 20px;
             word-break: keep-all;
         }
@@ -302,12 +304,12 @@
             background: var(--color-obsidian);
             border-radius: var(--radius-card);
             padding: 36px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(239, 228, 207, 0.08);
             transition: var(--transition-smooth);
         }
 
         .card:hover {
-            border-color: rgba(255, 255, 255, 0.25);
+            border-color: rgba(239, 228, 207, 0.25);
         }
 
         .grid-4 {
@@ -340,7 +342,7 @@
         .info-card-num {
             font-size: 48px;
             font-weight: 900;
-            color: rgba(80, 160, 255, 0.9);
+            color: var(--color-signal-orange);
             line-height: 1;
             flex-shrink: 0;
             letter-spacing: -2px;
@@ -357,7 +359,7 @@
 
         .info-card-desc {
             font-size: 13px;
-            color: rgba(255,255,255,0.7);
+            color: rgba(239, 228, 207, 0.7);
             line-height: 1.6;
             margin-top: 4px;
         }
@@ -371,16 +373,16 @@
         }
 
         .skill-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(239, 228, 207, 0.03);
+            border: 1px solid rgba(239, 228, 207, 0.08);
             border-radius: 16px;
             padding: 24px;
             transition: var(--transition-smooth);
         }
 
         .skill-box:hover {
-            border-color: rgba(255, 255, 255, 0.22);
-            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(239, 228, 207, 0.22);
+            background: rgba(239, 228, 207, 0.05);
         }
 
         .skill-box-title {
@@ -416,7 +418,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            box-shadow: 0 4px 12px rgba(26, 16, 8, 0.35);
             transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease;
         }
 
@@ -429,7 +431,7 @@
 
         .skill-icon .label {
             font-size: 11px;
-            color: rgba(255,255,255,0.65);
+            color: rgba(239, 228, 207, 0.65);
             font-weight: 600;
             transition: color 0.25s ease;
         }
@@ -439,7 +441,7 @@
 
         .skill-icon:hover .tile {
             transform: scale(1.32) translateY(-6px);
-            box-shadow: 0 12px 26px rgba(0,0,0,0.55);
+            box-shadow: 0 12px 26px rgba(26, 16, 8, 0.55);
         }
 
         .skill-icon:hover .label {
@@ -453,15 +455,15 @@
             left: 50%;
             transform: translateX(-50%) translateY(8px) scale(0.94);
             width: 190px;
-            background: #2b2b2f;
-            border: 1px solid rgba(255,255,255,0.14);
+            background: #33281e;
+            border: 1px solid rgba(239, 228, 207, 0.14);
             border-radius: 12px;
             padding: 12px 14px;
             font-size: 12px;
             line-height: 1.55;
-            color: rgba(255,255,255,0.85);
+            color: rgba(239, 228, 207, 0.85);
             text-align: left;
-            box-shadow: 0 14px 34px rgba(0,0,0,0.5);
+            box-shadow: 0 14px 34px rgba(26, 16, 8, 0.5);
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -482,7 +484,7 @@
             left: 50%;
             transform: translateX(-50%);
             border: 7px solid transparent;
-            border-top-color: #2b2b2f;
+            border-top-color: #33281e;
         }
 
         .skill-icon:hover .skill-tip,
@@ -495,8 +497,8 @@
         .skill-box-desc {
             font-size: 13px;
             line-height: 1.7;
-            color: rgba(255,255,255,0.72);
-            border-top: 1px solid rgba(255,255,255,0.08);
+            color: rgba(239, 228, 207, 0.72);
+            border-top: 1px solid rgba(239, 228, 207, 0.08);
             padding-top: 14px;
         }
 
@@ -528,13 +530,13 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            background: rgba(29, 29, 31, 0.92);
+            background: rgba(42, 33, 25, 0.92);
             -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             padding: 10px 18px;
             border-radius: var(--radius-pill);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(239, 228, 207, 0.15);
+            box-shadow: 0 12px 32px rgba(26, 16, 8, 0.4);
             font-size: 12px;
             color: var(--color-frost-white);
             max-width: calc(100% - 32px);
@@ -558,8 +560,8 @@
 
         .fmt-field select,
         .fmt-field input[type="color"] {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(239, 228, 207, 0.08);
+            border: 1px solid rgba(239, 228, 207, 0.2);
             color: var(--color-frost-white);
             border-radius: 8px;
             padding: 4px 8px;
@@ -579,8 +581,8 @@
         }
 
         .fmt-reset-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(239, 228, 207, 0.1);
+            border: 1px solid rgba(239, 228, 207, 0.2);
             color: var(--color-frost-white);
             border-radius: var(--radius-pill);
             padding: 5px 12px;
@@ -590,7 +592,7 @@
             transition: var(--transition-smooth);
         }
 
-        .fmt-reset-btn:hover { background: rgba(255, 255, 255, 0.18); }
+        .fmt-reset-btn:hover { background: rgba(239, 228, 207, 0.18); }
 
         .fmt-hint {
             color: var(--color-platinum);
@@ -615,7 +617,7 @@
             height: 280px;
             object-fit: cover;
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(239, 228, 207, 0.15);
         }
 
         .info-table {
@@ -626,7 +628,7 @@
         .info-table th, .info-table td {
             padding: 12px 16px;
             text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(239, 228, 207, 0.08);
             font-size: 14px;
         }
 
@@ -651,19 +653,23 @@
             right: 50%;
             margin-left: -50vw;
             margin-right: -50vw;
+            /* 밝은 종이 위에서는 강조색을 진하게 (첫 화면 잉크 팔레트와 같은 값) */
+            --color-apple-blue: #a5440f;
+            --color-signal-orange: #b4470f;
+            --color-platinum: #75634c;
         }
 
         .light-section .headline { color: var(--color-obsidian); }
         .light-section .sub-text { color: var(--color-graphite); }
         .light-section .card {
-            background: #fbfbfd;
-            border-color: rgba(0, 0, 0, 0.06);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            background: #fbf6ec;
+            border-color: rgba(26, 16, 8, 0.06);
+            box-shadow: 0 4px 20px rgba(26, 16, 8, 0.02);
         }
         .light-section .info-table th { color: var(--color-graphite); }
         .light-section .info-table td { color: var(--color-obsidian); }
         .light-section .info-table th, .light-section .info-table td {
-            border-bottom-color: rgba(0, 0, 0, 0.08);
+            border-bottom-color: rgba(26, 16, 8, 0.08);
         }
 
         /* 흰 영역은 휠 한 번에 통째로 넘어가므로, 한 화면 안에 내용이 다 보이도록 여백을 줄여 위로 당깁니다. */
@@ -707,8 +713,8 @@
         .metric-badge {
             display: flex;
             flex-direction: column;
-            background: rgba(0, 113, 227, 0.06);
-            border: 1px solid rgba(0, 113, 227, 0.2);
+            background: rgba(217, 119, 58, 0.06);
+            border: 1px solid rgba(217, 119, 58, 0.2);
             padding: 16px 24px;
             border-radius: 16px;
             min-width: 0;
@@ -744,7 +750,7 @@
             object-fit: cover;
             border-radius: 12px;
             flex-shrink: 0;
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(26, 16, 8, 0.08);
             order: 2;
         }
 
@@ -770,7 +776,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(26, 16, 8, 0.6);
             z-index: 2000;
             align-items: center;
             justify-content: center;
@@ -791,7 +797,7 @@
             max-height: 88vh;
             overflow-y: auto;
             padding: 48px 48px 44px;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 24px 64px rgba(26, 16, 8, 0.35);
             animation: modalPopIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -808,7 +814,7 @@
             height: 32px;
             border-radius: 50%;
             border: none;
-            background: rgba(0, 0, 0, 0.06);
+            background: rgba(26, 16, 8, 0.06);
             color: var(--color-obsidian);
             font-size: 15px;
             cursor: pointer;
@@ -818,7 +824,7 @@
             transition: var(--transition-smooth);
         }
 
-        .project-modal-close:hover { background: rgba(0, 0, 0, 0.12); }
+        .project-modal-close:hover { background: rgba(26, 16, 8, 0.12); }
 
         .project-modal-eyebrow {
             display: block;
@@ -846,7 +852,7 @@
             object-fit: cover;
             border-radius: 14px;
             margin: 0 auto 24px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(26, 16, 8, 0.08);
         }
 
         .project-modal-info-grid {
@@ -855,7 +861,7 @@
             gap: 16px;
             margin-bottom: 24px;
             padding-bottom: 24px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(26, 16, 8, 0.08);
         }
 
         .project-modal-info-item {
@@ -906,7 +912,7 @@
             text-align: center;
             padding: 100px 24px;
             background: var(--color-carbon);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(239, 228, 207, 0.08);
             min-height: 60vh;
             display: flex;
             flex-direction: column;
@@ -916,12 +922,12 @@
 
         .contact-card {
             background: var(--color-obsidian);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(239, 228, 207, 0.12);
             border-radius: var(--radius-card);
             padding: 48px 64px;
             max-width: 540px;
             width: 100%;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 40px rgba(26, 16, 8, 0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -930,8 +936,8 @@
         }
 
         .contact-card:hover {
-            border-color: rgba(0, 113, 227, 0.4);
-            box-shadow: 0 16px 48px rgba(0, 113, 227, 0.15);
+            border-color: rgba(217, 119, 58, 0.4);
+            box-shadow: 0 16px 48px rgba(217, 119, 58, 0.15);
         }
 
         .contact-title {
@@ -946,10 +952,10 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(239, 228, 207, 0.05);
             padding: 12px 24px;
             border-radius: var(--radius-pill);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(239, 228, 207, 0.08);
         }
 
         .contact-icon {
@@ -1688,7 +1694,7 @@
         </label>
         <label class="fmt-field">
             <span>색상</span>
-            <input type="color" id="fmtColor" value="#f5f5f7">
+            <input type="color" id="fmtColor" value="#efe4cf">
         </label>
         <button type="button" id="fmtResetBtn" class="fmt-reset-btn">초기화</button>
         <span id="fmtHint" class="fmt-hint">문구를 클릭하고 서식을 선택하세요</span>
@@ -1902,7 +1908,7 @@
 
             function rgbToHex(rgbStr) {
                 const m = (rgbStr || '').match(/\d+/g);
-                if (!m || m.length < 3) return '#f5f5f7';
+                if (!m || m.length < 3) return '#efe4cf';
                 return '#' + m.slice(0, 3).map(n => Math.max(0, Math.min(255, parseInt(n, 10))).toString(16).padStart(2, '0')).join('');
             }
 
