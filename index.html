@@ -49,7 +49,7 @@
         :root {
             --color-pure-black: #d6c09b;   /* Resume 바탕: About보다 한 단계 진한 갈색 양피지 */
             --color-obsidian: #2a2119;     /* 어두운 카드 / 밝은 섹션의 글자 */
-            --color-carbon: #ccb48d;       /* Contact 바탕 */
+            --color-carbon: #f4ecdc;       /* Contact 바탕: About과 같은 크림 */
             --color-frost-white: #efe4cf;  /* 어두운 바탕 위 글자 */
             --color-paper-white: #f4ecdc;  /* 밝은 섹션 바탕: 밝은 양피지 */
             --color-platinum: #9a8a74;
@@ -1518,6 +1518,58 @@
         .contact-section { border-top-color: rgba(43, 29, 18, 0.12); }
         .contact-item { background: rgba(255, 250, 240, 0.55); border-color: rgba(43, 29, 18, 0.14); }
         .contact-icon { filter: brightness(0) opacity(0.8); }
+
+        /* ==========================================================================
+           Resume를 한 화면에 담기: 휠 한 번에 섹션 단위로 부드럽게 넘어가도록 여백·크기를 줄임
+           ========================================================================== */
+        @media (min-width: 701px) {
+            #resume.section {
+                padding-top: clamp(72px, 9vh, 92px);
+                padding-bottom: clamp(16px, 2.5vh, 28px);
+                justify-content: center;
+            }
+            #resume .eyebrow { margin-bottom: 6px; }
+            #resume .headline { font-size: clamp(28px, 3vw, 40px); margin-bottom: 6px; }
+            #resume .sub-text { font-size: 15px; margin-bottom: clamp(12px, 2vh, 20px); }
+            #resume .card { padding: clamp(16px, 2.2vh, 22px) 26px; border-radius: 20px; }
+            #resume > .card[style*="margin-bottom"] { margin-bottom: 12px !important; }
+            #resume > .card[style*="margin-top"] { margin-top: 12px !important; }
+            #resume .grid-2 { gap: 12px; }
+            #resume .profile-container { grid-template-columns: 150px 1fr; gap: 26px; }
+            #resume .profile-img { height: clamp(160px, 22vh, 200px); }
+            #resume .profile-container h3 { font-size: 20px !important; margin-bottom: 8px !important; }
+            #resume .info-table th, #resume .info-table td { padding: 8px 14px; font-size: 13.5px; }
+            #resume .grid-2 h3 { font-size: 16px !important; margin-bottom: 10px !important; }
+            #resume .grid-2 ul { font-size: 13.5px !important; line-height: 1.7 !important; }
+            #resume .skills-grid { gap: 14px; margin-top: 12px; }
+            #resume .skill-box { padding: 14px 18px; }
+            #resume .skill-box-title { margin-bottom: 10px; }
+            #resume .skill-icons { margin-bottom: 10px; }
+            #resume .skill-box-desc { padding-top: 10px; font-size: 12.5px; }
+        }
+        /* 노트북처럼 세로가 짧은 화면에서는 한 단계 더 촘촘하게 */
+        @media (min-width: 701px) and (max-height: 820px) {
+            #resume.section { padding-top: 68px; padding-bottom: 12px; }
+            #resume .headline { font-size: 28px; margin-bottom: 2px; }
+            #resume .sub-text { font-size: 14px; margin-bottom: 10px; }
+            #resume .card { padding: 12px 22px; }
+            #resume > .card[style*="margin-bottom"] { margin-bottom: 10px !important; }
+            #resume > .card[style*="margin-top"] { margin-top: 10px !important; }
+            #resume .grid-2 { gap: 10px; }
+            #resume .profile-img { height: 150px; }
+            #resume .info-table th, #resume .info-table td { padding: 5px 12px; }
+            #resume .grid-2 h3 { margin-bottom: 6px !important; }
+            #resume .skills-grid { margin-top: 8px; }
+            #resume .skill-box { padding: 10px 16px; }
+            #resume .skill-box-title { margin-bottom: 6px; }
+            #resume .skill-icons { margin-bottom: 6px; }
+            #resume .skill-box-desc { padding-top: 6px; }
+        }
+
+        /* 바탕색 리듬: Info(양피지) → Resume(진한 갈색) → About(크림) → Portfolio(진한 갈색) → Contact(크림) */
+        .light-section--tan { background-color: #d6c09b; }
+        .light-section--tan .card { background: #efe4cd; border-color: rgba(43, 29, 18, 0.14); box-shadow: 0 6px 22px rgba(60, 35, 12, 0.1); }
+        .contact-section { --color-obsidian: #fbf6ec; }
     </style>
 </head>
 <body>
@@ -1935,7 +1987,7 @@
         </section>
     </div>
 
-    <div class="light-section">
+    <div class="light-section light-section--tan">
         <section id="portfolio" class="section">
             <div class="eyebrow editable-md" data-edit-id="edit84" contenteditable="false">04. PORTFOLIO</div>
             <h2 class="headline editable-md" data-edit-id="edit44" contenteditable="false"><p>Project Experiences</p>
@@ -2250,6 +2302,41 @@
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (!raw) return;
                 const data = JSON.parse(raw);
+
+                // 저장은 화면의 모든 문구를 통째로 담기 때문에, 파일에서 기본 문구를 고쳐도
+                // 예전에 저장해 둔 옛 기본 문구가 새 문구를 덮어씁니다.
+                // 아래 목록은 "파일에서 바꾼 옛 기본 문구"이며, 저장값이 이와 같으면(직접 고친 게 아니면)
+                // 저장값을 버리고 파일의 새 문구를 씁니다. 기본 문구를 바꿀 때마다 옛 문구를 여기에 추가하세요.
+                const STALE_DEFAULTS = {
+                    edit194: ['Featured Project 03'],
+                    edit166: ['Featured Project 03'],
+                    edit199: ['Featured Project 04 · Marketing'],
+                    edit220: ['Featured Project 04 · Marketing'],
+                    edit67: ['02. COVER LETTER'],
+                    edit68: ['03. RESUME'],
+                    edit228: ['인스타그램 릴스 (9:16 세로 숏폼, 약 20초)'],
+                    edit230: ['2026.11.06 ~ 11.12 (7일, 17편)'],
+                    edit234: ['총 조회 6,563회 · 공유 17회 · 좋아요 27개'],
+                    edit237: ['상세 설명 itch.io · X · 레딧 · 디시인사이드에 웹 빌드를 홍보했지만']
+                };
+                const plainText = html => {
+                    const d = document.createElement('div');
+                    d.innerHTML = html;
+                    return d.textContent.replace(/\s+/g, ' ').trim();
+                };
+                let dropped = false;
+                Object.keys(STALE_DEFAULTS).forEach(key => {
+                    const entry = data[key];
+                    const html = typeof entry === 'string' ? entry : entry && entry.html;
+                    if (typeof html !== 'string') return;
+                    const text = plainText(html);
+                    if (STALE_DEFAULTS[key].some(old => text === old || text.startsWith(old))) {
+                        delete data[key];
+                        dropped = true;
+                    }
+                });
+                if (dropped) localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
                 const editables = document.querySelectorAll('.editable-md');
                 editables.forEach((el, i) => {
                     const key = el.dataset.editId || `idx${i}`;
@@ -2567,7 +2654,8 @@
                 const maxY = document.documentElement.scrollHeight - vh;
                 const panels = [...colorPanels].map(p => ({
                     top: Math.round(p.getBoundingClientRect().top + y),
-                    light: p.classList.contains('light-section')
+                    // 모든 영역을 같은 방식으로: 휠 한 번에 다음 영역으로 (내용이 화면보다 길면 먼저 끝까지 내림)
+                    light: true
                 }));
                 // 현재 패널: 화면 맨 위가 걸친 패널 (페이지 끝에 닿았으면 화면에 보이는 맨 아래 패널)
                 const edge = y >= maxY - 1 ? y + vh - 1 : y + 1;
@@ -2583,7 +2671,8 @@
                     else if (next && (cur.light || y + vh + delta > next.top + 1)) target = Math.min(next.top, maxY);
                 } else if (prev) {
                     if (cur.light && y > cur.top + 1) target = cur.top;
-                    else if (cur.light) target = Math.max(cur.top - vh, 0);
+                    // 위 영역이 화면보다 조금(80px 이하)만 길면 끝부분에 한 번 멈추지 않고 바로 그 영역의 맨 위로
+                    else if (cur.light) target = (cur.top - prev.top) - vh <= 80 ? prev.top : Math.max(cur.top - vh, 0);
                     else if (y + delta < cur.top) target = prev.light ? prev.top : Math.max(cur.top - vh, 0);
                 }
 
