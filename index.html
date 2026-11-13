@@ -1427,15 +1427,22 @@
             transition: background 0.2s ease;
         }
         .detail-close:hover { background: rgba(244, 236, 220, 1); }
+        /* 영상과 글을 한 덩어리로 화면 가운데(가로·세로)에 둠 */
         .detail-inner {
-            max-width: 1280px;
-            margin: 0 auto;
+            min-height: 100%;
+            box-sizing: border-box;
             padding: clamp(72px, 10vh, 104px) clamp(20px, 5vw, 64px) 64px;
             display: grid;
-            grid-template-columns: auto minmax(0, 1fr);
+            grid-template-columns: auto minmax(0, 520px);
+            justify-content: center;
+            align-content: center;
             gap: clamp(28px, 4vw, 64px);
             align-items: start;
         }
+        /* 한글이 단어 중간에서 끊기지 않게 (예: "숏 / 폼"), 제목은 줄 길이를 고르게 */
+        .detail-content { word-break: keep-all; overflow-wrap: break-word; }
+        .detail-content .project-modal-title { text-wrap: balance; line-height: 1.25; }
+        .detail-content .project-modal-info-value { line-height: 1.5; }
         .detail-media {
             position: relative;
             border-radius: 16px;
@@ -1459,7 +1466,7 @@
             margin-bottom: 20px;
         }
         .detail-content .project-modal-info-grid { margin-bottom: 24px; }
-        .detail-content .project-modal-desc { font-size: 15px; line-height: 1.85; max-width: 720px; }
+        .detail-content .project-modal-desc { font-size: 15px; line-height: 1.85; }
         /* 영상이 날아가는 동안만 쓰는 임시 상자 */
         .detail-flyer {
             position: fixed;
@@ -1478,7 +1485,7 @@
             filter: saturate(0.55) sepia(0.2) brightness(0.96);
         }
         @media (max-width: 700px) {
-            .detail-inner { grid-template-columns: minmax(0, 1fr); padding-top: 72px; }
+            .detail-inner { grid-template-columns: minmax(0, 1fr); padding-top: 72px; align-content: start; }
         }
 
         /* ==========================================================================
@@ -1575,7 +1582,7 @@
                  "자세히 보기"를 누르면 영상이 왼쪽 위로 올라가며 상세 화면(#projectDetail)으로 넘어감 -->
             <div class="hero-showcase" id="heroShowcase" tabindex="0" role="region" aria-roledescription="carousel" aria-label="진행한 프로젝트 하이라이트">
                 <div class="showcase-stage">
-                <article class="showcase-slide is-active" aria-roledescription="slide" aria-label="1 / 5">
+                <article class="showcase-slide is-active" aria-roledescription="slide" aria-label="1 / 4">
                     <div class="showcase-text">
                         <span class="showcase-eyebrow editable-md" data-edit-id="edit184" contenteditable="false">Featured Project 01</span>
                         <h3 class="showcase-title editable-md" data-edit-id="edit185" contenteditable="false">Last Sanctuary</h3>
@@ -1588,35 +1595,22 @@
                         <video src="./showcase/last_sanctuary.mp4" poster="./showcase/last_sanctuary.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>
                     </div>
                 </article>
-                <article class="showcase-slide" aria-roledescription="slide" aria-label="2 / 5">
+                <article class="showcase-slide" aria-roledescription="slide" aria-label="2 / 4">
                     <div class="showcase-text">
-                        <span class="showcase-eyebrow editable-md" data-edit-id="edit189" contenteditable="false">Featured Project 02</span>
-                        <h3 class="showcase-title editable-md" data-edit-id="edit190" contenteditable="false">내일할래</h3>
-                        <p class="showcase-meta editable-md" data-edit-id="edit191" contenteditable="false">방치형 클리커 게임 | 2인 팀 | 진행기간: 2주</p>
-                        <span class="showcase-role editable-md" data-edit-id="edit192" contenteditable="false">담당 역할: 메인 개발 및 리소스 제작</span>
-                        <div class="showcase-tasks editable-md" data-edit-id="edit193" contenteditable="false">- 인게임 아트 리소스 및 UI/UX 인터페이스 설계<br>- 방치형 성장에 따른 루프 및 메인 개발 로직 구현<br>- 단기 프로젝트 내 시각적·기능적 완성도 도출</div>
-                        <button type="button" class="showcase-more" onclick="openProjectDetail(this, 'project2Modal')">자세히 보기 →</button>
-                    </div>
-                    <div class="showcase-media showcase-media--square">
-                        <img class="showcase-art" src="./project_naeil.png" alt="내일할래 대표 이미지" loading="lazy">
-                    </div>
-                </article>
-                <article class="showcase-slide" aria-roledescription="slide" aria-label="3 / 5">
-                    <div class="showcase-text">
-                        <span class="showcase-eyebrow editable-md" data-edit-id="edit194" contenteditable="false">Featured Project 03</span>
+                        <span class="showcase-eyebrow editable-md" data-edit-id="edit194" contenteditable="false">Featured Project 02</span>
                         <h3 class="showcase-title editable-md" data-edit-id="edit195" contenteditable="false">More Must Mush</h3>
                         <p class="showcase-meta editable-md" data-edit-id="edit196" contenteditable="false">방치형 벽돌깨기 게임 | 팀 프로젝트 | 진행기간: 2026.09 ~ 진행 중</p>
                         <span class="showcase-role editable-md" data-edit-id="edit197" contenteditable="false">담당 역할: 기획, 개발 및 출시 운영</span>
                         <div class="showcase-tasks editable-md" data-edit-id="edit198" contenteditable="false">- HTML 프로토타입 제작 및 Unity 이식<br>- 아트 리소스 적용, 캐릭터 리깅, 다국어 현지화<br>- itch.io 출시 · 데브로그 운영 및 모바일 UI 개편</div>
                         <button type="button" class="showcase-more" onclick="openProjectDetail(this, 'project3Modal')">자세히 보기 →</button>
                     </div>
-                    <div class="showcase-media showcase-media--square">
-                        <img class="showcase-art" src="./project_moremustmush.png" alt="More Must Mush 대표 이미지" loading="lazy">
+                    <div class="showcase-media showcase-media--wide">
+                        <video src="./showcase/more_must_mush.mp4" poster="./showcase/more_must_mush.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>
                     </div>
                 </article>
-                <article class="showcase-slide" aria-roledescription="slide" aria-label="4 / 5">
+                <article class="showcase-slide" aria-roledescription="slide" aria-label="3 / 4">
                     <div class="showcase-text">
-                        <span class="showcase-eyebrow editable-md" data-edit-id="edit199" contenteditable="false">Featured Project 04 · Marketing</span>
+                        <span class="showcase-eyebrow editable-md" data-edit-id="edit199" contenteditable="false">Featured Project 03 · Marketing</span>
                         <h3 class="showcase-title editable-md" data-edit-id="edit200" contenteditable="false">More Must Mush 숏폼 마케팅</h3>
                         <p class="showcase-meta editable-md" data-edit-id="edit201" contenteditable="false">인스타그램 릴스 | 팀: 숨쉬었음청년 | 2026.11</p>
                         <span class="showcase-role editable-md" data-edit-id="edit202" contenteditable="false">담당 역할: 마케팅 기획 및 숏폼 광고 제작</span>
@@ -1629,7 +1623,7 @@
                         <div class="showcase-reel"><video src="./showcase/reel_c.mp4" poster="./showcase/reel_c.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video></div>
                     </div>
                 </article>
-                <article class="showcase-slide" aria-roledescription="slide" aria-label="5 / 5">
+                <article class="showcase-slide" aria-roledescription="slide" aria-label="4 / 4">
                     <div class="showcase-text">
                         <span class="showcase-eyebrow editable-md" data-edit-id="edit204" contenteditable="false">Marketing · 대표작 릴스</span>
                         <h3 class="showcase-title editable-md" data-edit-id="edit205" contenteditable="false">콩쥐팥쥐 「밑 빠진 독」</h3>
@@ -1652,13 +1646,12 @@
                 <div class="showcase-controls">
                     <button type="button" class="showcase-arrow prev" aria-label="이전 프로젝트">‹</button>
                     <button type="button" class="showcase-arrow next" aria-label="다음 프로젝트">›</button>
-                    <span class="showcase-count" aria-live="polite">01 / 05</span>
+                    <span class="showcase-count" aria-live="polite">01 / 04</span>
                     <div class="showcase-dots">
                         <button type="button" class="showcase-dot" aria-label="1번 장면 보기"></button>
                         <button type="button" class="showcase-dot" aria-label="2번 장면 보기"></button>
                         <button type="button" class="showcase-dot" aria-label="3번 장면 보기"></button>
                         <button type="button" class="showcase-dot" aria-label="4번 장면 보기"></button>
-                        <button type="button" class="showcase-dot" aria-label="5번 장면 보기"></button>
                     </div>
                 </div>
                 </div>
@@ -1974,28 +1967,7 @@
                 <div class="card">
                     <div class="project-card-inner">
                         <div class="project-card-content">
-                            <span class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit86" contenteditable="false">Featured Project 02</span>
-                            <h3 style="font-size: 24px; font-weight: 700; margin: 8px 0;" class="editable-md" data-edit-id="edit49" contenteditable="false"><p>내일할래</p>
-</h3>
-                            <p style="font-size: 13px; color: var(--color-graphite); margin-bottom: 16px;" class="editable-md" data-edit-id="edit50" contenteditable="false">방치형 클리커 게임 | 2인 팀 | 진행기간: 2주</p>
-                            <div style="font-size: 14px; line-height: 1.6; color: var(--color-obsidian);" class="editable-md" data-edit-id="edit51" contenteditable="false">
-                                <strong>담당 역할: 메인 개발 및 리소스 제작</strong><br>
-                                - 인게임 아트 리소스 및 UI/UX 인터페이스 설계<br>
-                                - 방치형 성장에 따른 루프 및 메인 개발 로직 구현<br>
-                                - 단기 프로젝트 내 시각적·기능적 완성도 도출
-                            </div>
-                            <div style="margin-top: 20px;">
-                                <button class="cta-btn" onclick="openProjectModal('project2Modal')"><span class="editable-md" data-edit-id="edit99" contenteditable="false">자세히 보기 →</span></button>
-                            </div>
-                        </div>
-                        <img src="./project_naeil.png" alt="내일할래 프로젝트 이미지" class="project-img">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="project-card-inner">
-                        <div class="project-card-content">
-                            <span class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit166" contenteditable="false">Featured Project 03</span>
+                            <span class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit166" contenteditable="false">Featured Project 02</span>
                             <h3 style="font-size: 24px; font-weight: 700; margin: 8px 0;" class="editable-md" data-edit-id="edit167" contenteditable="false"><p>More Must Mush</p>
 </h3>
                             <p style="font-size: 13px; color: var(--color-graphite); margin-bottom: 16px;" class="editable-md" data-edit-id="edit168" contenteditable="false">방치형 벽돌깨기 게임 | 팀 프로젝트 | 진행기간: 2026.09 ~ 진행 중</p>
@@ -2016,7 +1988,7 @@
                 <div class="card">
                     <div class="project-card-inner">
                         <div class="project-card-content">
-                            <span class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit220" contenteditable="false">Featured Project 04 · Marketing</span>
+                            <span class="eyebrow editable-md" style="color: var(--color-apple-blue);" data-edit-id="edit220" contenteditable="false">Featured Project 03 · Marketing</span>
                             <h3 style="font-size: 24px; font-weight: 700; margin: 8px 0;" class="editable-md" data-edit-id="edit221" contenteditable="false"><p>More Must Mush 숏폼 마케팅</p>
 </h3>
                             <p style="font-size: 13px; color: var(--color-graphite); margin-bottom: 16px;" class="editable-md" data-edit-id="edit222" contenteditable="false">인스타그램 릴스 마케팅 | 팀 프로젝트 (숨쉬었음청년) | 2026.11</p>
@@ -2073,47 +2045,12 @@
                 </div>
             </div>
 
-            <div class="project-modal-overlay" id="project2Modal">
-                <div class="project-modal">
-                    <button type="button" class="project-modal-close" onclick="closeProjectModal('project2Modal')" aria-label="닫기">✕</button>
-                    <span class="project-modal-eyebrow editable-md" data-edit-id="edit124" contenteditable="false">PROJECT DETAIL</span>
-                    <h3 class="project-modal-title editable-md" data-edit-id="edit125" contenteditable="false">내일할래</h3>
-                    <img src="./project_naeil.png" alt="내일할래 상세 이미지" class="project-modal-img">
-                    <div class="project-modal-info-grid">
-                        <div class="project-modal-info-item">
-                            <span class="project-modal-info-label editable-md" data-edit-id="edit126" contenteditable="false">장르</span>
-                            <span class="project-modal-info-value editable-md" data-edit-id="edit127" contenteditable="false">방치형 클리커</span>
-                        </div>
-                        <div class="project-modal-info-item">
-                            <span class="project-modal-info-label editable-md" data-edit-id="edit128" contenteditable="false">플랫폼</span>
-                            <span class="project-modal-info-value editable-md" data-edit-id="edit129" contenteditable="false">PC / 모바일</span>
-                        </div>
-                        <div class="project-modal-info-item">
-                            <span class="project-modal-info-label editable-md" data-edit-id="edit130" contenteditable="false">팀 구성</span>
-                            <span class="project-modal-info-value editable-md" data-edit-id="edit131" contenteditable="false">2인 팀</span>
-                        </div>
-                        <div class="project-modal-info-item">
-                            <span class="project-modal-info-label editable-md" data-edit-id="edit132" contenteditable="false">진행기간</span>
-                            <span class="project-modal-info-value editable-md" data-edit-id="edit133" contenteditable="false">2주</span>
-                        </div>
-                        <div class="project-modal-info-item">
-                            <span class="project-modal-info-label editable-md" data-edit-id="edit134" contenteditable="false">담당 역할</span>
-                            <span class="project-modal-info-value editable-md" data-edit-id="edit135" contenteditable="false">메인 개발 및 리소스 제작</span>
-                        </div>
-                    </div>
-                    <div class="project-modal-desc editable-md" data-edit-id="edit136" contenteditable="false">
-                        <strong>상세 설명</strong>
-                        인게임 아트 리소스와 UI/UX 인터페이스를 직접 설계했습니다. 방치형 성장 구조에 맞춘 루프와 메인 개발 로직을 구현했고, 짧은 개발 기간 안에서도 시각적·기능적 완성도를 끌어올렸습니다.
-                    </div>
-                </div>
-            </div>
-
             <div class="project-modal-overlay" id="project3Modal">
                 <div class="project-modal">
                     <button type="button" class="project-modal-close" onclick="closeProjectModal('project3Modal')" aria-label="닫기">✕</button>
                     <span class="project-modal-eyebrow editable-md" data-edit-id="edit171" contenteditable="false">PROJECT DETAIL</span>
                     <h3 class="project-modal-title editable-md" data-edit-id="edit172" contenteditable="false">More Must Mush</h3>
-                    <img src="./project_moremustmush.png" alt="More Must Mush 상세 이미지" class="project-modal-img">
+                    <video src="./showcase/more_must_mush.mp4" poster="./showcase/more_must_mush.jpg" class="project-modal-img" style="aspect-ratio: 16 / 9; max-width: 100%;" controls muted playsinline preload="none" aria-label="More Must Mush 트레일러"></video>
                     <div class="project-modal-info-grid">
                         <div class="project-modal-info-item">
                             <span class="project-modal-info-label editable-md" data-edit-id="edit173" contenteditable="false">장르</span>
@@ -2151,11 +2088,11 @@
                     <div class="project-modal-info-grid">
                         <div class="project-modal-info-item">
                             <span class="project-modal-info-label editable-md" data-edit-id="edit227" contenteditable="false">채널</span>
-                            <span class="project-modal-info-value editable-md" data-edit-id="edit228" contenteditable="false">인스타그램 릴스 (9:16 세로 숏폼, 약 20초)</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit228" contenteditable="false">인스타그램 릴스 (세로 숏폼)</span>
                         </div>
                         <div class="project-modal-info-item">
                             <span class="project-modal-info-label editable-md" data-edit-id="edit229" contenteditable="false">기간</span>
-                            <span class="project-modal-info-value editable-md" data-edit-id="edit230" contenteditable="false">2026.11.06 ~ 11.12 (7일, 17편)</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit230" contenteditable="false">2026.11.06 ~ 11.12 (17편)</span>
                         </div>
                         <div class="project-modal-info-item">
                             <span class="project-modal-info-label editable-md" data-edit-id="edit231" contenteditable="false">팀 구성</span>
@@ -2163,7 +2100,7 @@
                         </div>
                         <div class="project-modal-info-item">
                             <span class="project-modal-info-label editable-md" data-edit-id="edit233" contenteditable="false">성과</span>
-                            <span class="project-modal-info-value editable-md" data-edit-id="edit234" contenteditable="false">총 조회 6,563회 · 공유 17회 · 좋아요 27개</span>
+                            <span class="project-modal-info-value editable-md" data-edit-id="edit234" contenteditable="false">7일 조회 6,563회</span>
                         </div>
                         <div class="project-modal-info-item">
                             <span class="project-modal-info-label editable-md" data-edit-id="edit235" contenteditable="false">담당 역할</span>
@@ -2172,7 +2109,9 @@
                     </div>
                     <div class="project-modal-desc editable-md" data-edit-id="edit237" contenteditable="false">
                         <strong>상세 설명</strong>
-                        itch.io · X · 레딧 · 디시인사이드에 웹 빌드를 홍보했지만 29일간 페이지 조회 739회, 외부 사이트에서 온 방문은 9회에 그쳤습니다. 지표를 분석해 게임이 아니라 유입이 문제라는 것을 확인하고, 모바일 출시에 맞춰 세로 숏폼(인스타그램 릴스)으로 채널을 전환했습니다. 전래동화 패러디에 방치 보상 · 뽑기 같은 게임 시스템을 반전으로 넣은 B급 숏폼을 기획하고, 콘티 → Google Flow(Veo 3.1) 영상 생성 → Unity 인게임 녹화 → Python · ffmpeg 편집 파이프라인으로 17편을 제작했습니다. 7일 만에 조회 6,563회로 itch.io 29일 조회의 약 9배를 기록했고, 대표작 「밑 빠진 독」은 1,440명이 보며 건너뛰기 35.5%로 첫 장면의 붙잡는 힘을 확인했습니다. 좋아요 · 팔로우 전환이 낮다는 점을 바탕으로 마지막 장면에 반응을 유도하는 다음 방향을 세웠습니다.
+                        itch.io 웹 빌드 홍보가 29일간 조회 739회에 그치자, 지표를 분석해 문제를 '유입'으로 짚고 모바일 숏폼(인스타그램 릴스)으로 채널을 바꿨습니다.<br>
+                        전래동화 패러디 × 방치형 시스템 반전 콘셉트로 콘티부터 영상 생성(Veo 3.1), 인게임 녹화, 편집까지 직접 맡아 17편을 만들었습니다.<br>
+                        7일 만에 조회 6,563회(itch.io 29일의 약 9배)를 기록했고, 낮은 팔로우 전환을 개선할 다음 방향까지 정리했습니다.
                     </div>
                 </div>
             </div>
