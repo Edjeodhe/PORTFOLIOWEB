@@ -2445,7 +2445,7 @@
             }
             const wait = ms => new Promise(r => setTimeout(r, ms));
 
-            // ── 문구: 펜촉이 글자마다 윗부분→아랫부분 순서로 왼쪽→오른쪽을 지나가며, 지나간 자리에 잉크 글씨가 바로 남음
+            // ── 문구: 그림을 그리듯 글자 윤곽선이 먼저 그려지고 잉크가 차오름
             // 글자 하나하나를 실제 제목 글자와 정확히 같은 자리에 그리고, 다 쓰면 같은 프레임에 실제 제목으로 바꿔치기
             // (자리가 어긋나거나 서로 흐려지며 바뀌면 문구가 두 번 그려지는 것처럼 보이므로)
             function writeHeadline() {
@@ -2485,68 +2485,57 @@
 
                     // 페이지 좌표로 그려서 쓰는 도중에 스크롤해도 제목과 함께 움직이게 함
                     const svg = el('svg', { class: 'headline-draw', width: document.documentElement.scrollWidth, height: document.documentElement.scrollHeight }, document.body);
-                    const defs = el('defs', {}, svg);
                     const ink = el('g', {}, svg);
 
-                    // 글자마다 윗줄·아랫줄 두 번의 획으로 나눠, 펜이 지나간 만큼만 글씨가 보이게 하는 마스크
-                    const ROWS = 2, GLYPH = 0.13, LINE_GAP = 0.22, WORD_GAP = 0.07;
-                    const strokes = [];
-                    let clock = 0, prev = null;
+                    // 윤곽선 길이는 글자를 캔버스에 찍어 테두리 픽셀 수로 어림 (점선 길이를 정하는 데 씀)
+                    const PW = Math.ceil(size * 2), PH = Math.ceil(size * 2);
+                    const probe = document.createElement('canvas');
+                    probe.width = PW; probe.height = PH;
+                    const pc = probe.getContext('2d', { willReadFrequently: true });
+                    pc.font = fontSpec;
+                    pc.textBaseline = 'middle';
+                    const outlineLen = ch => {
+                        pc.clearRect(0, 0, PW, PH);
+                        pc.fillText(ch, size * 0.3, PH / 2);
+                        const a = pc.getImageData(0, 0, PW, PH).data, on = i => a[i * 4 + 3] > 127;
+                        let n = 0;
+                        for (let y = 1; y < PH - 1; y++) for (let x = 1; x < PW - 1; x++) {
+                            const i = y * PW + x;
+                            if (on(i) && (!on(i - 1) || !on(i + 1) || !on(i - PW) || !on(i + PW))) n++;
+                        }
+                        return n * 1.25 + size;
+                    };
+
+                    // 초상화처럼: 글자마다 윤곽선을 펜으로 따라 그린 뒤 잉크가 차오름. 왼쪽 글자부터 겹쳐 가며 그려짐
+                    const TOTAL = 2.6, DUR = 0.9, LINE_GAP = 0.15;
+                    const lineBreaks = glyphs.filter((g, i) => i && Math.abs(glyphs[i - 1].rect.top - g.rect.top) > g.rect.height / 2).length;
+                    const span = TOTAL - DUR - LINE_GAP * lineBreaks;
+                    const anims = [];
+                    let breaks = 0;
                     glyphs.forEach((g, i) => {
-                        const left = g.rect.left + scrollX, top = g.rect.top + scrollY, w = g.rect.width, h = g.rect.height;
-                        if (prev) {
-                            if (Math.abs(prev.rect.top - g.rect.top) > h / 2) clock += LINE_GAP;      // 다음 줄로 넘어갈 때 펜을 옮기는 시간
-                            else if (g.rect.left - prev.rect.right > size * 0.15) clock += WORD_GAP; // 띄어쓰기
-                        }
-                        prev = g;
-                        const mask = el('mask', { id: `hlMask${i}`, maskUnits: 'userSpaceOnUse', x: left - w, y: top - h, width: w * 3, height: h * 3 }, defs);
-                        for (let r = 0; r < ROWS; r++) {
-                            const y = top + h * (r + 0.5) / ROWS;
-                            const x0 = left - size * 0.08, x1 = left + w + size * 0.08, len = x1 - x0;
-                            const path = el('path', {
-                                d: `M ${x0} ${y} L ${x1} ${y}`, fill: 'none', stroke: '#fff',
-                                'stroke-width': h / ROWS * 1.15, 'stroke-dasharray': len, 'stroke-dashoffset': len
-                            }, mask);
-                            strokes.push({ path, len, x0, x1, y, start: clock, dur: GLYPH / ROWS });
-                            clock += GLYPH / ROWS;
-                        }
+                        const left = g.rect.left + scrollX, top = g.rect.top + scrollY, h = g.rect.height;
+                        if (i && Math.abs(glyphs[i - 1].rect.top - g.rect.top) > h / 2) breaks++;
+                        const L = outlineLen(g.ch);
                         const t = el('text', {
                             x: left, y: top + (h - asc - desc) / 2 + asc,
                             'font-family': cs.fontFamily, 'font-size': cs.fontSize, 'font-weight': cs.fontWeight,
-                            fill: g.color, mask: `url(#hlMask${i})`
+                            fill: g.color, stroke: g.color, 'stroke-width': Math.max(1, size * 0.02),
+                            'stroke-linejoin': 'round', 'fill-opacity': 0, 'stroke-dasharray': `${L} ${L}`, 'stroke-dashoffset': L
                         }, ink);
                         t.textContent = g.ch;
+                        const delay = (glyphs.length > 1 ? i / (glyphs.length - 1) * span : 0) + breaks * LINE_GAP + rand() * 0.06;
+                        anims.push(t.animate([
+                            { strokeDashoffset: L, fillOpacity: 0, strokeOpacity: 1 },
+                            { strokeDashoffset: 0, fillOpacity: 0, strokeOpacity: 1, offset: 0.62 },
+                            { strokeDashoffset: 0, fillOpacity: 1, strokeOpacity: 0 }
+                        ], { duration: DUR * 1000, delay: delay * 1000, fill: 'forwards', easing: 'ease-out' }));
                     });
 
-                    // 펜: 펜촉 끝이 (0,0), 몸통은 오른쪽 위로 기울어짐
-                    const penScale = size / 56;
-                    const pen = el('g', { opacity: 0 }, svg);
-                    const penBody = el('g', { transform: `scale(${penScale}) rotate(35)` }, pen);
-                    el('path', { d: 'M0 0 L -5 -17 L 5 -17 Z', fill: '#2b1d12' }, penBody);
-                    el('path', { d: 'M0 -2 L0 -13', stroke: '#c9a24a', 'stroke-width': 0.8 }, penBody);
-                    el('rect', { x: -6, y: -36, width: 12, height: 19, rx: 2, fill: '#3a2a1c' }, penBody);
-                    el('rect', { x: -7.5, y: -41, width: 15, height: 5, fill: '#c9a24a' }, penBody);
-                    el('rect', { x: -7, y: -118, width: 14, height: 78, rx: 6, fill: '#5a3b22' }, penBody);
-                    el('rect', { x: -4, y: -112, width: 2.5, height: 64, rx: 1.2, fill: 'rgba(255,255,255,0.18)' }, penBody);
-
-                    const TOTAL = clock;
                     return new Promise(resolve => {
                         const start = performance.now();
                         (function frame(now) {
-                            if (skipped) return resolve();
-                            const t = (now - start) / 1000;
-                            let active = strokes[0];
-                            strokes.forEach(s => {
-                                const p = clamp01((t - s.start) / s.dur);
-                                s.path.setAttribute('stroke-dashoffset', s.len * (1 - p));
-                                if (t >= s.start) active = s;
-                            });
-                            // 펜촉은 지금 쓰는 획의 끝에 붙어 다니며 살짝 위아래로 흔들림
-                            const ap = clamp01((t - active.start) / active.dur);
-                            const px = lerp(active.x0, active.x1, ap), py = active.y + Math.sin(ap * Math.PI * 3) * size * 0.04;
-                            pen.setAttribute('transform', `translate(${px} ${py})`);
-                            pen.setAttribute('opacity', (Math.min(1, t / 0.15) * (1 - seg(t, TOTAL, TOTAL + 0.3))).toFixed(3));
-                            if (t < TOTAL + 0.3) return requestAnimationFrame(frame);
+                            if (skipped) { anims.forEach(a => a.cancel()); return resolve(); }
+                            if ((now - start) / 1000 < TOTAL + 0.1) return requestAnimationFrame(frame);
                             h1.style.transition = 'none';
                             row.classList.add('headline-on');
                             void h1.offsetWidth;
