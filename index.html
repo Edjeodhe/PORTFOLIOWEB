@@ -1316,11 +1316,23 @@
             overflow: hidden;
             cursor: pointer;
         }
+        /* 지금 장면까지의 막대는 주황색으로 채움 (2/3이면 앞의 두 개) */
         .showcase-dot::after {
             content: '';
             position: absolute;
             inset: 0;
             background: #e8925a;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+        .showcase-dot.is-on::after { transform: scaleX(1); }
+        /* 지금 장면 막대 위로 밝은 선이 지나가며 다음 장까지 남은 시간을 표시 */
+        .showcase-dot::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: rgba(255, 240, 220, 0.6);
             transform: scaleX(var(--p, 0));
             transform-origin: left;
         }
@@ -2945,7 +2957,8 @@
                     if (art && on) { art.style.animation = 'none'; void art.offsetWidth; art.style.animation = ''; }
                 });
                 dots.forEach((d, k) => {
-                    d.style.setProperty('--p', k < index ? 1 : 0);
+                    d.classList.toggle('is-on', k <= index);
+                    d.style.setProperty('--p', 0);
                     d.setAttribute('aria-current', k === index ? 'true' : 'false');
                 });
                 if (count) count.textContent = `${pad(index + 1)} / ${pad(slides.length)}`;
