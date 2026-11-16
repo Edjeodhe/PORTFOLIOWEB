@@ -685,7 +685,7 @@
         .light-section .card { padding: 28px; }
         .light-section .grid-2,
         .light-section .about-cover-grid { gap: 16px; }
-        .about-stats-imgs { width: 460px; }
+        .about-stats-imgs { width: 460px; max-width: 100%; }
 
         /* 노트북처럼 세로가 짧은 화면에서는 한 단계 더 촘촘하게 */
         @media (max-height: 880px) {
@@ -989,11 +989,26 @@
             .grid-4 { grid-template-columns: 1fr; }
             .header { padding: 0 12px; top: 12px; }
             .brand-logo { display: none; }
-            .nav-container { width: 100%; justify-content: space-between; }
-            .nav-btn { font-size: 11px; padding: 6px 10px; }
+            /* 메뉴 다섯 개 + 잠금 버튼이 폰 화면 너비 안에 다 들어가게 (넘치면 페이지 전체가 옆으로 넓어짐) */
+            .nav-container { width: 100%; box-sizing: border-box; justify-content: space-between; gap: 2px; padding: 4px; }
+            .nav-btn { font-size: 11px; padding: 6px 6px; white-space: nowrap; }
+            .lock-btn { padding: 5px 7px; }
+            #lockText { display: none; }
             .section { padding: 90px 16px 50px; }
             .contact-card { padding: 32px 20px; }
             .contact-email { font-size: 15px; }
+            /* 인적사항 표: 폰에서는 한 줄에 "항목 | 내용" 한 쌍씩 (4칸이면 긴 이메일이 카드 밖으로 넘침) */
+            .profile-container { grid-template-columns: minmax(0, 1fr); }
+            .info-table { display: grid; grid-template-columns: auto minmax(0, 1fr); }
+            .info-table tbody, .info-table tr { display: contents; }
+            .info-table th, .info-table td { display: block; padding: 10px 6px; font-size: 13px; }
+            .info-table th { width: auto; white-space: nowrap; }
+            .info-table td { overflow-wrap: anywhere; }
+            /* 프로젝트 카드: 이미지와 글을 옆으로 두면 글 칸이 너무 좁아져 카드가 화면 밖으로 넘침 → 이미지 위, 글 아래 */
+            .grid-2 { grid-template-columns: minmax(0, 1fr); }
+            .project-card-inner { flex-direction: column; gap: 16px; }
+            .project-card-content { width: 100%; }
+            .project-img { order: -1; width: 100%; height: auto; aspect-ratio: 16 / 9; }
         }
 
         /* ==========================================================================
@@ -1174,9 +1189,27 @@
             border: 1px solid rgba(43, 29, 18, 0.28);
             background: rgba(43, 29, 18, 0.06);
         }
-        .showcase-media--wide { aspect-ratio: 16 / 9; }
+        /* 슬라이드를 넘겨도 영상 자리(위치·크기)가 바뀌지 않게, 모든 슬라이드가 같은 16:9 틀을 씀 */
+        .showcase-media--wide,
+        .showcase-media--phone,
+        .showcase-media--reels { aspect-ratio: 16 / 9; }
         .showcase-media--square { aspect-ratio: 1 / 1; }
-        .showcase-media--phone { aspect-ratio: 9 / 16; }
+        /* 세로 영상 한 편: 틀 가운데에 두고, 양옆은 같은 그림을 흐리게 깔아 채움 */
+        .showcase-media--phone {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            isolation: isolate;
+        }
+        .showcase-media--phone::before {
+            content: '';
+            position: absolute;
+            inset: -24px;
+            z-index: -1;
+            background: var(--backdrop) center / cover no-repeat;
+            filter: blur(20px) saturate(0.45) sepia(0.3) brightness(0.92);
+        }
+        .showcase-media.showcase-media--phone video { width: auto; aspect-ratio: 9 / 16; }
         .showcase-media--reels {
             display: flex;
             gap: 12px;
@@ -1186,8 +1219,9 @@
             overflow: visible;
         }
         .showcase-reel {
+            flex: 1 1 0;
+            min-width: 0;
             height: 100%;
-            aspect-ratio: 9 / 16;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid rgba(43, 29, 18, 0.28);
@@ -1216,7 +1250,9 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            justify-content: center;
+            /* 글 양이 달라도 제목 줄 높이가 슬라이드마다 같도록 위에서부터 배치 */
+            justify-content: flex-start;
+            padding-top: clamp(8px, 6vh, 64px);
             padding-bottom: 58px;
         }
         .showcase-slide .showcase-text > * {
@@ -1377,9 +1413,11 @@
             .hero-showcase { flex: 0 0 auto; height: 660px; max-height: none; }
             .showcase-slide { grid-template-columns: minmax(0, 1fr); grid-template-rows: 250px minmax(0, 1fr); gap: 18px; }
             .showcase-media { order: -1; justify-self: start; max-width: 100%; }
-            .showcase-media--wide { width: 100%; aspect-ratio: auto; }
+            .showcase-media--wide,
+            .showcase-media--phone,
+            .showcase-media--reels { width: 100%; aspect-ratio: auto; }
             .showcase-media--reels .showcase-reel:nth-child(3) { display: none; }
-            .showcase-text { justify-content: flex-start; }
+            .showcase-text { padding-top: 0; }
             .showcase-tasks { display: none; }
             .showcase-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
@@ -1690,7 +1728,7 @@
                         </div>
                         <p class="showcase-note editable-md" data-edit-id="edit219" contenteditable="false">릴스 17편 7일 합계: 조회 6,563회 · 좋아요 27 · 공유 17 · 댓글 2</p>
                     </div>
-                    <div class="showcase-media showcase-media--phone">
+                    <div class="showcase-media showcase-media--phone" style="--backdrop: url('./showcase/reel_best.jpg');">
                         <video src="./showcase/reel_best.mp4" poster="./showcase/reel_best.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>
                     </div>
                 </article>
@@ -3335,9 +3373,11 @@
             const place = (el, b) => Object.assign(el.style, { left: b.left + 'px', top: b.top + 'px', width: b.width + 'px', height: b.height + 'px' });
 
             // 영상이 들어갈 왼쪽 위 자리 크기: 원본 비율 그대로, 화면 너비의 절반 안쪽
+            // 폰에서 innerWidth는 화면 밖으로 넘친 요소까지 포함해 커질 수 있어, 실제 보이는 너비(clientWidth)를 씀
             function slotSize(aspect) {
-                if (innerWidth <= 700) { const w = innerWidth - 40; return { w, h: w / aspect }; }
-                const w = Math.min(innerWidth * 0.46, 680, innerHeight * 0.62 * aspect);
+                const vw = document.documentElement.clientWidth;
+                if (vw <= 700) { const w = vw - 40; return { w, h: w / aspect }; }
+                const w = Math.min(vw * 0.46, 680, innerHeight * 0.62 * aspect);
                 return { w, h: w / aspect };
             }
 
