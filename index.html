@@ -1194,22 +1194,21 @@
         .showcase-media--phone,
         .showcase-media--reels { aspect-ratio: 16 / 9; }
         .showcase-media--square { aspect-ratio: 1 / 1; }
-        /* 세로 영상 한 편: 틀 가운데에 두고, 양옆은 같은 그림을 흐리게 깔아 채움 */
+        /* 세로 영상 한 편: 16:9 자리는 그대로 두되 틀은 안 보이게 하고, 테두리를 영상에만 둘러 양옆 여백을 잘라냄 */
         .showcase-media--phone {
-            position: relative;
             display: flex;
             justify-content: center;
-            isolation: isolate;
+            border: none;
+            border-radius: 0;
+            background: none;
+            overflow: visible;
         }
-        .showcase-media--phone::before {
-            content: '';
-            position: absolute;
-            inset: -24px;
-            z-index: -1;
-            background: var(--backdrop) center / cover no-repeat;
-            filter: blur(20px) saturate(0.45) sepia(0.3) brightness(0.92);
+        .showcase-media.showcase-media--phone video {
+            width: auto;
+            aspect-ratio: 9 / 16;
+            border-radius: 14px;
+            border: 1px solid rgba(43, 29, 18, 0.28);
         }
-        .showcase-media.showcase-media--phone video { width: auto; aspect-ratio: 9 / 16; }
         .showcase-media--reels {
             display: flex;
             gap: 12px;
@@ -1728,7 +1727,7 @@
                         </div>
                         <p class="showcase-note editable-md" data-edit-id="edit219" contenteditable="false">릴스 17편 7일 합계: 조회 6,563회 · 좋아요 27 · 공유 17 · 댓글 2</p>
                     </div>
-                    <div class="showcase-media showcase-media--phone" style="--backdrop: url('./showcase/reel_best.jpg');">
+                    <div class="showcase-media showcase-media--phone">
                         <video src="./showcase/reel_best.mp4" poster="./showcase/reel_best.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>
                     </div>
                 </article>
